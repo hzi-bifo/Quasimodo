@@ -64,7 +64,7 @@ git clone git@github.com:hzi-bifo/HCMV_benchmark.git
 ```
 
 ### Download the dataset and reference genomes
-All the sequencing data can be obtained from ENV with accession number: PRJEB32127. And the genome sequences of HCMV strains are included in this repo.
+All the sequencing data can be obtained from ENV with accession number: PRJEB32127. And the genome sequences of HCMV strains and Phix are included in this repo.
 ```shell
 # Download the sequencing data
 ```
@@ -80,7 +80,7 @@ samplesDesc: config/sample.path.tsv
 MerlinRef: ../ref/merlin/Merlin.BAC.fasta # path to Merlin genome
 TB40ERef: ../ref/TB40/TB40E.GFP.fasta # path to TB40 genome
 AD169Ref: ../ref/AD169/AD169.BAC.fasta # path to Ad169 genome
-
+PhixRef: ref/Phix.fa # path to the phix genome, to remove remaining phix sequences
 projectPath: ~/hcmv_benchmark_output # path to the project aka the directory for the outputs
 
 genomeDiffM: merlin_TB40E
@@ -97,17 +97,20 @@ mkdir -p ~/hcmv_benchmark_output/results/snp/callers/clc/
 cp -r HCMV_benchmark/data/clc ~/hcmv_benchmark_output/results/snp/callers/clc/
 ```
 
-### Run the assembly and haplotype reconstruction
+### Evaluate the assembly and haplotype reconstruction
 
-1. 
-
-### Evaluate the assembles
 
 ### Test the SNP callers
-If you need to include the CLC result in the evaluation, please put the CLC variants calling results provided in this repo into your project directory:
+To include the CLC result in the evaluation, please put the CLC variants calling results provided in this repo into your project directory:
 ```shell
 mkdir -p <your project path>/results/SNP/callers
 cp -r HCMV_benchmark/data/CLC <your project path>/results/SNP/callers
 ```
 
 ### Analyze the mutation context of identified SNPs
+
+
+### All in one:
+```shell
+python run_all_benchmakring.py
+```
