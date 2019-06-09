@@ -38,7 +38,8 @@ conda activate hcmv_benchmark
 # Install Python packages via pip
 pip install pandas
 # Install R packages 
-Rscript -e 'install.packages(c("tidyverse", "cowplot", "pheatmap", "VennDiagram", "gridExtra", "reshape2", "NMF", "ggdendro", "RColorBrewer"))'
+Rscript -e 'install.packages(c("tidyverse", "cowplot", "pheatmap", "VennDiagram", 
+   "gridExtra", "reshape2", "NMF","ggdendro", "RColorBrewer"))'
 ```
 
 To Install `R Bioconductor` packages `SomaticSignatures`, `MutationalPatterns` , we should type `R` to enter the `R` command window. In the `R`command window, you need to install core packages for `Bioconductor`:
