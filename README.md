@@ -19,7 +19,7 @@ To reproduce the output, the following tools with specified version need to be i
 First of all, the `bioconda` must be install in your system. You can follow this instruction [here](https://bioconda.github.io). Then, you simply install all tools using:
 
 ```shell
-conda env create -f config/conda_environment.yaml
+conda env create -f config/conda_env.yaml
 ```
 
 The above command line will create a conda environment named **hcmv_benchmark** and install all required tools listed above into this environment except for `savage`.
@@ -81,12 +81,29 @@ samplesDesc: config/sample.path.tsv
 MerlinRef: ../ref/merlin/Merlin.BAC.fasta # path to Merlin genome
 TB40ERef: ../ref/TB40/TB40E.GFP.fasta # path to TB40 genome
 AD169Ref: ../ref/AD169/AD169.BAC.fasta # path to Ad169 genome
-projectPath: ~/hcmv_benchmark_output # path to the project aka the directory for the outputs
+projectPath: ../hcmv_benchmark_output # path to the project aka the directory for the outputs
 
 genomeDiffM: merlin_TB40E
 genomeDiffA: AD169_TB40E
 
 ```
+
+- Provide the sample list `config/sample_list.txt`
+The format is as follows:
+```tsv
+sample	r1	r2
+TA-0-1	../data/cleaned/cl_fq/TA-0-1.qc.nophix.r1.fq	../data/cleaned/cl_fq/TA-0-1.qc.nophix.r2.fq
+TA-1-0	../data/cleaned/cl_fq/TA-1-0.qc.nophix.r1.fq	../data/cleaned/cl_fq/TA-1-0.qc.nophix.r2.fq
+TA-1-10	../data/cleaned/cl_fq/TA-1-10.qc.nophix.r1.fq	../data/cleaned/cl_fq/TA-1-10.qc.nophix.r2.fq
+TA-1-1	../data/cleaned/cl_fq/TA-1-1.qc.nophix.r1.fq	../data/cleaned/cl_fq/TA-1-1.qc.nophix.r2.fq
+TA-1-50	../data/cleaned/cl_fq/TA-1-50.qc.nophix.r1.fq	../data/cleaned/cl_fq/TA-1-50.qc.nophix.r2.fq
+TM-0-1	../data/cleaned/cl_fq/TM-0-1.qc.nophix.r1.fq	../data/cleaned/cl_fq/TM-0-1.qc.nophix.r2.fq
+TM-1-0	../data/cleaned/cl_fq/TM-1-0.qc.nophix.r1.fq	../data/cleaned/cl_fq/TM-1-0.qc.nophix.r2.fq
+TM-1-10	../data/cleaned/cl_fq/TM-1-10.qc.nophix.r1.fq	../data/cleaned/cl_fq/TM-1-10.qc.nophix.r2.fq
+TM-1-1	../data/cleaned/cl_fq/TM-1-1.qc.nophix.r1.fq	../data/cleaned/cl_fq/TM-1-1.qc.nophix.r2.fq
+TM-1-50	../data/cleaned/cl_fq/TM-1-50.qc.nophix.r1.fq	../data/cleaned/cl_fq/TM-1-50.qc.nophix.r2.fq
+```
+Please modify the paths to the sequencing files accordingly.
 
 - Obtain the `CLC` SNP calling results from this repo 
 `CLC` is not a freeware, so here we provide the output SNPs in this repo. First you need to create a project folder, for example with name `hcmv_benchmark_output` and then copy the files into the project directory:
@@ -98,9 +115,12 @@ cp -r HCMV_benchmark/data/clc ~/hcmv_benchmark_output/results/snp/callers/clc/
 ```
 
 ### Evaluate the assembly and haplotype reconstruction
+```shell
+conda activate hcmv_benchmark
+snakemake -s evaluate_assembly.smk [-j <cores>]
+```
 
-
-### Test the SNP callers
+### Test the SNP callers and analyze the mutation context of identified SNPs
 To include the CLC result in the evaluation, please put the CLC variants calling results provided in this repo into your project directory:
 ```shell
 mkdir -p <your project path>/results/SNP/callers
@@ -109,13 +129,7 @@ cp -r HCMV_benchmark/data/CLC <your project path>/results/SNP/callers
 Evaluation
 ```shell
 conda activate hcmv_benchmark
-snakemake -s evaluate_snpcall.smk
-```
-
-### Analyze the mutation context of identified SNPs
-```shell
-conda activate hcmv_benchmark
-snakemake -s evaluate_assembly.smk
+snakemake -s evaluate_snpcall.smk [-j <cores>]
 ```
 
 ### All in one:
