@@ -1,10 +1,10 @@
 ## Assembly and SNP calling benchmarking based on HCMV mock communities
 
-This repository contains the scripts and pipeline which can reproduce the results in HCMV benchmarking paper. In this study we evaluated the genome assemblers and variants callers on 6 HCMV mock communities in which each consists of two lab strains. 
+This repository contains the scripts and pipeline that reproduces the results of the HCMV benchmarking study. In this study we evaluated genome assemblers and variant callers on 6 in vitro generated, mixed strain HCMV sequence samples, each consisting of two lab strains in different abundance ratios. 
 
 ### Prerequirements
 
-To reproduce the output, the following tools with specified version need to be installed:
+To reproduce the output, the following programs with specified versions need to be installed:
 
 1. `Snakemake` (v5.3.0) for excuting the pipeline.
 2. `R-3.5.1` and package `tidyverse`, `SomaticSignatures`, `MutationalPatterns` and `cowplot` for the visualization and mutation signature analysis.
@@ -16,13 +16,13 @@ To reproduce the output, the following tools with specified version need to be i
 
 
 
-First of all, the `bioconda` must be install in your system. You can follow this instruction [here](https://bioconda.github.io). Then, you simply install all tools using:
+First of all, `bioconda` must be installed on your system. You can follow these instruction [here](https://bioconda.github.io). Then, you can simply install all programs using:
 
 ```shell
 conda env create -f config/conda_env.yaml
 ```
 
-The above command line will create a conda environment named **hcmv_benchmark** and install all required tools listed above into this environment except for `savage`.
+The above command line will create a conda environment named **hcmv_benchmark** and install all required programs listed above into this environment except for `savage`.
 
 Since `savage` requires `Python` version 2.7, you need to create a distinct environment for it:
 
@@ -58,14 +58,14 @@ BiocManager::install(c("SomaticSignatures", "MutationalPatterns", "SomaticCancer
 
 
 
-After all those have been done, please download the pipeline into your system:
+After all this has been done, download the pipeline onto your system:
 
 ```shell
 git clone git@github.com:hzi-bifo/HCMV_benchmark.git
 ```
 
 ### Download the dataset and reference genomes
-All the sequencing data can be obtained from ENV with accession number: PRJEB32127. And the genome sequences of HCMV strains are included in this repo.
+All sequencing data can be obtained from ENV with accession number: PRJEB32127. And the genome sequences of HCMV strains are included in this repo.
 ```shell
 # Download the sequencing data
 ```
@@ -120,7 +120,7 @@ conda activate hcmv_benchmark
 snakemake -s evaluate_assembly.smk [-j <cores>]
 ```
 
-### Test the SNP callers and analyze the mutation context of identified SNPs
+### Test variant callers and analyze the mutation context of identified variants
 To include the CLC result in the evaluation, please put the CLC variants calling results provided in this repo into your project directory:
 ```shell
 mkdir -p <your project path>/results/SNP/callers
