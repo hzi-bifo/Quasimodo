@@ -88,7 +88,7 @@ genomeDiffA: AD169_TB40E
 
 ```
 
-- Provide the sample list `config/sample_list.txt`
+- Provide the sample list `config/sample_list.txt`. The list is a tab delimitaed text file, and echo row is one sample.
 The format is as follows:
 ```tsv
 sample	r1	r2
