@@ -134,5 +134,5 @@ snakemake -s evaluate_snpcall.smk [-j <cores>]
 
 ### All in one:
 ```shell
-python run_all_benchmakring.py
+python run_all_benchmarking.py
 ```
