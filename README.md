@@ -1,4 +1,4 @@
-## Assembly and SNP calling benchmarking based on HCMV mock communities
+## Assembly and SNP calling benchmarking based on HCMV mixed strain genome sequence samples
 
 This repository contains the scripts and pipeline that reproduces the results of the HCMV benchmarking study. In this study we evaluated genome assemblers and variant callers on 6 in vitro generated, mixed strain HCMV sequence samples, each consisting of two lab strains in different abundance ratios. 
 
