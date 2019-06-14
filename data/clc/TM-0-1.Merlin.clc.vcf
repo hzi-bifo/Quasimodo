@@ -1,0 +1,18 @@
+##fileformat=VCFv4.1
+##fileDate=20181201
+##fileEncoding=UTF-8
+##fileOrigin=/CLC_Data/HCMV/DNA/Haplotype_mixture_zhilou/mix1/TM-0-1.Merlin.rmdup_clc_filetered
+##source=CLC Genomics Workbench 10.0.1 build 20170313123858
+##reference=/CLC_Data/HCMV/DNA/Haplotype_mixture_zhilou/mix1/Merlin_1555 (Genome)
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Total number of filtered reads per sample used by variant caller">
+##FORMAT=<ID=CLCAD2,Number=.,Type=Integer,Description="Allelic depth, number of filtered reads supporting the alleles where the first element represents the reference and subsequent elements represent the alternatives in the order listed in the ALT column">
+##FORMAT=<ID=VF,Number=1,Type=Float,Description="Variant frequency, the percentage of reads supporting the alternate allele">
+##FORMAT=<ID=AD,Number=.,Type=Integer,Description="Allelic depth, unfiltered count of all reads">
+##FORMAT=<ID=AO,Number=A,Type=Integer,Description="Alternate allele observation count">
+##FORMAT=<ID=RO,Number=1,Type=Integer,Description="Reference allele observation count">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	TM-0-1.Merlin.rmdup_clc_filetered
+Merlin_1555	73837	.	CGAG	C	200.00	.	.	GT:CLCAD2:DP	1/.:0,121:3068
+Merlin_1555	140788	.	GGGT	G	200.00	.	.	GT:CLCAD2:DP	1/.:0,61:2384
+Merlin_1555	171466	.	C	T	200.00	.	.	GT:CLCAD2:DP	1/1:0,1019:1020
+Merlin_1555	177925	.	TG	GT	200.00	.	.	GT:CLCAD2:DP	1/1:0,2957:2963

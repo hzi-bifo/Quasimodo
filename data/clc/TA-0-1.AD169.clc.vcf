@@ -1,0 +1,44 @@
+##fileformat=VCFv4.1
+##fileDate=20181129
+##fileEncoding=UTF-8
+##fileOrigin=/CLC_Data/HCMV/DNA/Haplotype_mixture_zhilou/Mixtures/TA-0-1.AD169.rmdup_filtered_clc
+##source=CLC Genomics Workbench 10.0.1 build 20170313123858
+##reference=/CLC_Data/HCMV/DNA/Haplotype_mixture_zhilou/pHB5 (Genome)
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Total number of filtered reads per sample used by variant caller">
+##FORMAT=<ID=CLCAD2,Number=.,Type=Integer,Description="Allelic depth, number of filtered reads supporting the alleles where the first element represents the reference and subsequent elements represent the alternatives in the order listed in the ALT column">
+##FORMAT=<ID=VF,Number=1,Type=Float,Description="Variant frequency, the percentage of reads supporting the alternate allele">
+##FORMAT=<ID=AD,Number=.,Type=Integer,Description="Allelic depth, unfiltered count of all reads">
+##FORMAT=<ID=AO,Number=A,Type=Integer,Description="Alternate allele observation count">
+##FORMAT=<ID=RO,Number=1,Type=Integer,Description="Reference allele observation count">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	TA-0-1.AD169.rmdup_filtered_clc
+pHB5	21955	.	C	CG	200.00	.	.	GT:CLCAD2:DP	1/.:0,2215:2275
+pHB5	22003	.	A	AG	200.00	.	.	GT:CLCAD2:DP	1/1:0,2215:2253
+pHB5	29347	.	G	T	200.00	.	.	GT:CLCAD2:DP	1/1:0,2221:2228
+pHB5	35871	.	T	C	200.00	.	.	GT:CLCAD2:DP	1/1:0,2142:2143
+pHB5	40007	.	G	T	200.00	.	.	GT:CLCAD2:DP	1/1:0,2137:2142
+pHB5	42101	.	T	C	200.00	.	.	GT:CLCAD2:DP	1/1:0,2314:2322
+pHB5	56829	.	C	A	200.00	.	.	GT:CLCAD2:DP	1/1:0,2128:2135
+pHB5	114352	.	C	T	200.00	.	.	GT:CLCAD2:DP	1/1:0,2314:2318
+pHB5	120268	.	T	TGC	200.00	.	.	GT:CLCAD2:DP	1/1:0,1858:1941
+pHB5	135406	.	T	C	200.00	.	.	GT:CLCAD2:DP	1/1:0,2427:2431
+pHB5	136918	.	G	A	200.00	.	.	GT:CLCAD2:DP	1/1:0,2118:2135
+pHB5	141334	.	TA	T	200.00	.	.	GT:CLCAD2:DP	1/1:0,2101:2228
+pHB5	144849	.	G	C	200.00	.	.	GT:CLCAD2:DP	1/1:0,2159:2161
+pHB5	147677	.	G	C	200.00	.	.	GT:CLCAD2:DP	1/1:0,2314:2317
+pHB5	152557	.	GC	CG	200.00	.	.	GT:CLCAD2:DP	1/1:0,2256:2260
+pHB5	155035	.	T	C	200.00	.	.	GT:CLCAD2:DP	1/1:0,2453:2454
+pHB5	160652	.	T	C	200.00	.	.	GT:CLCAD2:DP	1/1:0,2280:2285
+pHB5	193550	.	G	C	200.00	.	.	GT:CLCAD2:DP	1/1:0,2357:2359
+pHB5	193784	.	C	CG	200.00	.	.	GT:CLCAD2:DP	1/.:0,2142:2188
+pHB5	200083	.	C	CCT	200.00	.	.	GT:CLCAD2:DP	1/1:0,2309:2348
+pHB5	200103	.	C	CA	200.00	.	.	GT:CLCAD2:DP	1/1:0,2288:2318
+pHB5	201611	.	C	T	200.00	.	.	GT:CLCAD2:DP	1/1:0,2341:2346
+pHB5	201799	.	G	T	200.00	.	.	GT:CLCAD2:DP	1/1:0,2390:2393
+pHB5	217350	.	A	AG	200.00	.	.	GT:CLCAD2:DP	1/1:0,2185:2219
+pHB5	219033	.	C	T	200.00	.	.	GT:CLCAD2:DP	1/1:0,2264:2268
+pHB5	225909	.	C	CG	200.00	.	.	GT:CLCAD2:DP	1/1:0,2228:2282
+pHB5	227599	.	T	C	200.00	.	.	GT:CLCAD2:DP	1/1:0,2277:2282
+pHB5	234062	.	T	C	200.00	.	.	GT:CLCAD2:DP	1/1:0,2628:2634
+pHB5	234252	.	A	G	200.00	.	.	GT:CLCAD2:DP	1/1:0,3070:3076
+pHB5	234333	.	A	G	200.00	.	.	GT:CLCAD2:DP	1/1:0,2209:2215

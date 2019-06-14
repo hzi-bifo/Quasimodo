@@ -1,0 +1,8 @@
+name: savage
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - pear=0.9.6
+  - savage=0.4.0

@@ -1,0 +1,5 @@
+samplesDesc: config/sample_list.tsv
+MerlinRef: ref/Merlin.BAC.fa
+TB40ERef: ref/TB40E.GFP.fa
+AD169Ref: ref/AD169.BAC.fa
+projectPath: ../pipeline_output
