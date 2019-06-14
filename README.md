@@ -49,9 +49,9 @@ Please modify the paths to the sequencing files accordingly.
 
 ```shell
 # create the directory
-mkdir -p ~/hcmv_benchmark_output/results/snp/callers/clc/
+mkdir -p ~/hcmv_benchmark_output/results/snp/callers
 # put the CLC SNP calling results in the corresponding folder
-cp -r HCMV_benchmark/data/clc ~/hcmv_benchmark_output/results/snp/callers/clc/
+cp -r HCMV_benchmark/data/clc ~/hcmv_benchmark_output/results/snp/callers/
 ```
 
 ### Run the benchmarking
