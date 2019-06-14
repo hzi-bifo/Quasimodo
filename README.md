@@ -48,10 +48,12 @@ Please modify the paths to the sequencing files accordingly.
 `CLC` is not a freeware, so here we provide the output SNPs in this repo. First you need to create a project folder (which is defined in the config file as `projectPath`), for example with name `hcmv_benchmark_output` in your home directory and then copy the files into the project directory:
 
 ```shell
+# enter the program directory
+cd HCMV_benchmark
 # create the directory
 mkdir -p ~/hcmv_benchmark_output/results/snp/callers
 # put the CLC SNP calling results in the corresponding folder
-cp -r HCMV_benchmark/data/clc ~/hcmv_benchmark_output/results/snp/callers/
+cp -r data/clc ~/hcmv_benchmark_output/results/snp/callers/
 ```
 
 ### Run the benchmarking
