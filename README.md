@@ -20,7 +20,7 @@ All sequencing data can be obtained from ENV with accession number: PRJEB32127. 
 
 ### Preapre the configuration file and sample list file
 
-- Modify the `config/config.yaml`
+- Modify the `config/config.yaml`.
 All the paths must be either relative path to the parent directory of `config` folder or absolute path.
 
 ```yaml
@@ -29,7 +29,6 @@ MerlinRef: ../ref/merlin/Merlin.BAC.fasta # path to Merlin genome
 TB40ERef: ../ref/TB40/TB40E.GFP.fasta # path to TB40 genome
 AD169Ref: ../ref/AD169/AD169.BAC.fasta # path to AD169 genome
 projectPath: ~/hcmv_benchmark_output # path to the project aka the directory for outputs
-
 ```
 
 - Provide the sample list `config/sample_list.txt`. The list is a tab delimitaed text file, and echo row is one sample.
@@ -43,7 +42,7 @@ TA-1-10	../data/cleaned/cl_fq/TA-1-10.qc.nophix.r1.fq	../data/cleaned/cl_fq/TA-1
 ```
 Please modify the paths to the sequencing files accordingly.
 
-- Obtain the `CLC` SNP calling results from this repo 
+- Obtain the `CLC` SNP calling results from this repo. 
 `CLC` is not a freeware, so here we provide the output SNPs in this repo. First you need to create a project folder (which is defined in the config file as `projectPath`), for example with name `hcmv_benchmark_output` in your home directory and then copy the files into the project directory:
 
 ```shell
