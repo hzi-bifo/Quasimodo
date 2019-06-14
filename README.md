@@ -31,6 +31,7 @@ MerlinRef: ../ref/merlin/Merlin.BAC.fasta # path to Merlin genome
 TB40ERef: ../ref/TB40/TB40E.GFP.fasta # path to TB40 genome
 AD169Ref: ../ref/AD169/AD169.BAC.fasta # path to AD169 genome
 projectPath: ~/hcmv_benchmark_output # path to the project aka the directory for outputs
+threads: 2
 ```
 
 - Provide the sample list `config/sample_list.tsv`. The list is a tab delimitaed text file, and echo row is one sample.
