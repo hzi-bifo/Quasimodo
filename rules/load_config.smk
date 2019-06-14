@@ -26,6 +26,9 @@ report_dir = "/".join([project_dir, "reports"])
 seq_dir = "/".join([project_dir, "data/seqs"])
 results_dir = "/".join([project_dir, "results"])
 
+## Number of threads to use
+threads = config["threads"]
+
 ## Load read pairs
 def get_fastq(w):
     return samples.loc[(w.sample), ["r1", "r2"]].dropna()

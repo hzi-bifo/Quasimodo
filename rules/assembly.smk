@@ -6,7 +6,7 @@ rule spades:
         renamed_scaffolds = assembly_dir + "/spades/{sample}.spades.scaffolds.fa"
     params:
         outdir = assembly_dir + "/spades/{sample}"
-    threads: 16
+    threads: threads
     benchmark:
         report_dir + "/benchmarks/{sample}.spades.benchmark.txt"
     shell:
@@ -24,7 +24,7 @@ rule tadpole:
         cor_fq_r2 = assembly_dir + "/tadpole/{sample}/{sample}.tadpole.corr.r2.fq",
         scaffolds = assembly_dir + "/tadpole/{sample}/{sample}.tadpole.contigs.fa",
         renamed_scaffolds = assembly_dir + "/tadpole/{sample}.tadpole.scaffolds.fa"
-    threads: 16
+    threads: threads
     benchmark:
         report_dir + "/benchmarks/{sample}.tadpole.benchmark.txt"
     shell:
@@ -47,7 +47,7 @@ rule megahit:
     params:
         megahit_out = assembly_dir + "/megahit/{sample}",
         prefix = "{sample}.megahit"
-    threads: 16
+    threads: threads
     shell:
         """
         rmdir {params.megahit_out}
@@ -66,7 +66,7 @@ rule ray:
         report_dir + "/benchmarks/{sample}.ray.benchmark.txt"
     params:
         ray_out = assembly_dir + "/ray/{sample}"
-    threads: 16
+    threads: threads
     shell:
         """
         rmdir {params.ray_out}
@@ -85,7 +85,7 @@ rule idba:
     params:
         merged_pe = seq_dir + "/qc_fq/{sample}_12.fa",
         idba_out = assembly_dir + "/idba/{sample}"
-    threads: 16
+    threads: threads
     shell:
         """
         rmdir {params.idba_out}
@@ -105,7 +105,7 @@ rule abyss:
     params:
         abyss_out = "{sample}.abyss",
         abyss_outdir = assembly_dir + "/abyss/{sample}"
-    threads: 16
+    threads: threads
     shell:
         """
         abyss-pe np={threads} name={params.abyss_out} k=96 in='{input[0]} {input[1]}'

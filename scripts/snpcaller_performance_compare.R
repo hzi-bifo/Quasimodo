@@ -116,7 +116,9 @@ combined_plots <- list()
 
 point_plot_whole <- ggplot(snpcaller_performance_summary, aes(precision, recall, color=caller, shape=mixture)) + 
     geom_point(size=4) +
-    theme_bw(base_size=13) +
+    theme(legend.position = 'right',
+        legend.spacing.x = unit(0.2, 'cm'))
+    theme_bw(base_size=14) +
     xlim(0,1) + 
     ylim(0,1)
 #  guides(colour = guide_legend(override.aes = list(size=4)), shape = guide_legend(override.aes = list(size=4))) +
@@ -126,7 +128,7 @@ inset_zoom <- ggplot(snpcaller_performance_summary, aes(precision, recall, color
     geom_point(size=4) +
     xlim(0.8, 1) +
     ylim(0.5, 1) +
-    theme_bw(base_size=12) +
+    theme_bw(base_size=14) +
     theme(legend.position="none") +
     scale_colour_brewer(palette="Set1") +
     xlab("") +
@@ -142,6 +144,7 @@ point_plot  <- point_plot_whole +
 
 box_plot <- ggplot(snpcaller_performance_summary, aes(caller, f1, fill=caller)) + 
   geom_boxplot() + geom_jitter() +
+  theme(legend.position="none") +
   theme_bw(base_size = 14) + 
   scale_fill_brewer(palette = "Set1")
 
@@ -162,9 +165,9 @@ for (mix in samples){
             fontfamily = "sans",
             cat.fontfamily = "sans",
             main.fontfamily = "sans",
-            cex=1.1, 
-            main.cex = 1.2,
-            cat.cex=1.1
+            cex=1.2, 
+            main.cex = 1.3,
+            cat.cex=1.2
     )
     combined_plots[[n_panel]] <- grobTree(plot)
 }

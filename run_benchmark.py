@@ -3,12 +3,12 @@ import os
 import sys
 import argparse
 from argparse import RawTextHelpFormatter
+import snakemake
 
 wd = os.path.dirname(os.path.realpath(__file__))
 
 def start_evaluation(snake, dryrun=False, threads=2, conda_prefix=None):
     try:
-        import snakemake
         
         ## Unlock the working directory
         unlocked = snakemake.snakemake(
@@ -25,13 +25,14 @@ def start_evaluation(snake, dryrun=False, threads=2, conda_prefix=None):
             snakefile=snake,
             restart_times=3, 
             cores=threads,
+            config={"threads":threads},
             workdir=wd,
             use_conda=True,
             conda_prefix=conda_prefix,
-            dryrun= dryrun,
-            summary=True,
-            printshellcmds= True,
-            force_incomplete= True
+            dryrun=dryrun,
+#            summary=True,
+            printshellcmds=True,
+            force_incomplete=True
             )
         if not success:
             raise Exception('Snakemake pipeline failed!')

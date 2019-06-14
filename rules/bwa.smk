@@ -2,14 +2,13 @@ rule bwa:
     input:
         reads = get_fastq,
         ref = ref_seq
-#        ref_bwa_idx = ref_seq_idx
     output:
         sortedbam = seq_dir + "/bam/{sample}.{ref_name}.bam"
     conda:
-        "config/conda_env.yaml"
+        "../config/conda_env.yaml"
     log:
         report_dir + "/bwa/{sample}.{ref_name}.log"
-    threads: 16
+    threads: threads
     shell:
         """
         bwa mem -k 31 -t {threads} {input.ref[0]} {input[0]} {input[1]} |\

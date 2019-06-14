@@ -7,7 +7,7 @@ rule nucmmer:
         no_repeat_snp = snp_dir + "/nucmer/{genome_diff_name}.norepeat.snps",
         mask_repeat_snp = snp_dir + "/nucmer/{genome_diff_name}.maskrepeat.snps"
     conda:
-        "config/conda_env.yaml"
+        "../config/conda_env.yaml"
     params:
         genome_diff_prefix = snp_dir + "/nucmer/{genome_diff_name}"
     shell:

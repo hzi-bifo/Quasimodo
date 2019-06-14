@@ -5,8 +5,8 @@ rule lofreq:
     output:
         vcf = snpcall_dir + "/lofreq/{sample}.{ref_name}.lofreq.vcf"
     conda:
-        "config/conda_env.yaml"
-    threads: 16
+        "../config/conda_env.yaml"
+    threads: threads
     shell:
         """
         lofreq call-parallel --pp-threads {threads} -q 20 -Q 20 -m 20 \
@@ -22,8 +22,8 @@ rule varscan:
         var = snpcall_dir + "/varscan/{sample}.{ref_name}.varscan.out",
         vcf = snpcall_dir + "/varscan/{sample}.{ref_name}.varscan.vcf"
     conda:
-        "config/conda_env.yaml"
-    threads: 16
+        "../config/conda_env.yaml"
+    threads: threads
     shell:
         """
         samtools mpileup -f {input.ref[0]} {input.rmdupbam} > {output.pileup} 
@@ -37,9 +37,9 @@ rule freebayes:
         ref = ref_seq
     output:
         vcf = snpcall_dir + "/freebayes/{sample}.{ref_name}.freebayes.vcf"
-    threads: 16
+    threads: threads
     conda:
-        "config/conda_env.yaml"
+        "../config/conda_env.yaml"
     shell:
         """
         freebayes -p 1 -m 20 -q 20 -F 0.01 --min-coverage 10 -f {input.ref[0]} \
@@ -52,9 +52,9 @@ rule bcftools:
         ref = ref_seq
     output:
         vcf = snpcall_dir + "/bcftools/{sample}.{ref_name}.bcftools.vcf"
-    threads: 16
+    threads: threads
     conda:
-        "config/conda_env.yaml"
+        "../config/conda_env.yaml"
     shell:
         """
         bcftools mpileup -Ou -f {input.ref[0]} {input.rmdupbam} |\

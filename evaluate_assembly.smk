@@ -1,3 +1,4 @@
+## Load parameters from config file
 include: "rules/load_config.smk"
 
 assembly_dir = "/".join([project_dir, "results/asssembly"])
@@ -51,7 +52,7 @@ rule pear:
         "config/conda_savage_env.yaml"
     params:
         out = seq_dir + "/pear_merge/{sample}.pear"
-    threads: 16
+    threads: threads
     shell:
         """
         pear -j {threads} -f {input.reads[0]} -r {input.reads[1]} -o {params.out}
@@ -92,7 +93,7 @@ rule savage_full_ref:
     params:
         cwd = cwd,
         savage_sample_dir = assembly_dir + "/savage/{sample}"
-    threads: 16
+    threads: threads
     shell:
         """
         mkdir -p {params.savage_sample_dir}
