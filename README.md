@@ -4,7 +4,7 @@ This repository contains the scripts and pipeline that reproduces the results of
 
 ### Prerequirements
 
-To reproduce the output, you need to use `Bioconda`
+To reproduce the output, you need to use `Bioconda`.
 
 Please follow the instruction [here](https://bioconda.github.io) to install `Bioconda`. After this has been done, download the pipeline onto your system:
 
@@ -17,7 +17,6 @@ All sequencing data can be obtained from ENV with accession number: PRJEB32127. 
 ```shell
 # Download the sequencing data
 ```
-
 
 ### Preapre the configuration file and sample list file
 
@@ -54,9 +53,11 @@ mkdir -p ~/hcmv_benchmark_output/results/snp/callers/clc/
 cp -r HCMV_benchmark/data/clc ~/hcmv_benchmark_output/results/snp/callers/clc/
 ```
 
+### Run the benchmarking
+
 **All evaluation can be launched with `run_benchmark.py`**
 
-### Evaluate the assembly and haplotype reconstruction
+#### Evaluate the assembly and haplotype reconstruction
 ```shell
 python3 run_benchmark.py -t 10 assembly -c ~miniconda3/envs
 ```
@@ -64,13 +65,6 @@ The parameters for `run_benchmark.py`:
 ```shell
 usage: run_benchmark.py [-h] [-d] [-t THREADS] [-c CONDA_PREFIX]
                         {all,snpcall,assembly}
-
-    run_benchmark.py --- run the benchmarking for assembly and SNPs calling
-
-    Usage:
-    python run_benchmark.py [-d] [-t threads] <all|snpcall|assembly>
-
-
 
 positional arguments:
   {all,snpcall,assembly}
@@ -82,11 +76,11 @@ optional arguments:
   -t THREADS, --threads THREADS
                         The number of threads to use, default: 2
   -c CONDA_PREFIX, --conda_prefix CONDA_PREFIX
-                        The prefix of conda ENV which tells the program where to create the conda ENV (
-                        default: in the working directory)
+                        The prefix of conda ENV which tells the program where to create the conda ENV 
+                        (default: in the working directory)
 ```
 
-### Test variant callers and analyze the mutation context of identified variants
+#### Test variant callers and analyze the mutation context of identified variants
 To include the CLC result in the evaluation, please put the CLC variants calling results provided in this repo into your project directory:
 ```shell
 mkdir -p <your project path>/results/SNP/callers
@@ -97,7 +91,7 @@ Evaluation
 python3 run_benchmark.py -t 10 snpcall -c ~miniconda3/envs
 ```
 
-### All in one:
+#### All in one:
 ```shell
 python run_benchmarking.py -t 10 all
 ```
