@@ -12,7 +12,7 @@ To reproduce the output, the following programs with specified versions need to 
 4. `BCFtools` (v1.9), `VarScan` (v2.4.3), `Freebayes` (v1.2.0), `LoFreq` (v2.1.3.1).
 5. `ABySS` (v2.1.4), `megahit` (v1.1.3) , `IDBA` (v1.1.3), `SPAdes` (v3.12.0), `Ray` (v2.3.1), `tadpole` (v37.99).
 6. `metaquast` (v5.0.2) was used for evaluate the assembles.
-7. `PEAR` (v0.9.6), `savage` (v0.4.0) for haplotype assembly. `Python` (v2.7) is required by `savage`.
+7. `PEAR` (v0.9.6), `savage` (v0.4.1) for haplotype assembly. `Python` (v2.7) is required by `savage`.
 
 
 
@@ -27,7 +27,7 @@ The above command line will create a conda environment named **hcmv_benchmark** 
 Since `savage` requires `Python` version 2.7, you need to create a distinct environment for it:
 
 ```shell
-conda create -n savage savage=0.4.0 PEAR=0.9.6
+conda create -n savage savage=0.4.1 PEAR=0.9.6
 ```
 
 Install `R` and `Python` packages:
