@@ -33,7 +33,7 @@ AD169Ref: ../ref/AD169/AD169.BAC.fasta # path to AD169 genome
 projectPath: ~/hcmv_benchmark_output # path to the project aka the directory for outputs
 ```
 
-- Provide the sample list `config/sample_list.txt`. The list is a tab delimitaed text file, and echo row is one sample.
+- Provide the sample list `config/sample_list.tsv`. The list is a tab delimitaed text file, and echo row is one sample.
 The format is as follows:
 ```tsv
 sample	r1	r2
