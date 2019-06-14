@@ -18,6 +18,7 @@ git clone git@github.com:hzi-bifo/HCMV_benchmark.git
 All sequencing data can be obtained from ENV with accession number: PRJEB32127. And the genome sequences of HCMV strains are included in this repo in the `ref` directory.
 ```shell
 # Download the sequencing data
+wget -i data/PRJEB32127.txt -P <your project path>/data/seqs/reads
 ```
 
 ### Preapre the configuration file and sample list file
@@ -30,7 +31,7 @@ samplesDesc: config/sample.path.tsv
 MerlinRef: ../ref/merlin/Merlin.BAC.fasta # path to Merlin genome
 TB40ERef: ../ref/TB40/TB40E.GFP.fasta # path to TB40 genome
 AD169Ref: ../ref/AD169/AD169.BAC.fasta # path to AD169 genome
-projectPath: ~/hcmv_benchmark_output # path to the project aka the directory for outputs
+projectPath: <your project path> # path to the project aka the directory for outputs
 threads: 2
 ```
 
@@ -43,7 +44,7 @@ TA-1-0	../data/cleaned/cl_fq/TA-1-0.qc.nophix.r1.fq	../data/cleaned/cl_fq/TA-1-0
 TA-1-10	../data/cleaned/cl_fq/TA-1-10.qc.nophix.r1.fq	../data/cleaned/cl_fq/TA-1-10.qc.nophix.r2.fq
 ...
 ```
-Please modify the paths to the sequencing files accordingly.
+Please modify the paths to the sequencing files accordingly. The reads are in the `<your project path>/data/seqs/reads`
 
 - Obtain the `CLC` SNP calling results from this repo. 
 `CLC` is not a freeware, so here we provide the output SNPs in this repo. First you need to create a project folder (which is defined in the config file as `projectPath`), for example with name `hcmv_benchmark_output` in your home directory and then copy the files into the project directory:
