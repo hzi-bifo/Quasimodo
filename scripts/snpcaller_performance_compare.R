@@ -113,45 +113,54 @@ write.table(snpcaller_performance_summary,
             sep="\t", row.names=F, quote=F)
 
 combined_plots <- list()
-
+print("Point plot whole")
 point_plot_whole <- ggplot(snpcaller_performance_summary, aes(precision, recall, color=caller, shape=mixture)) + 
     geom_point(size=4) +
     theme(legend.position = 'right',
-        legend.spacing.x = unit(0.2, 'cm'))
-    theme_bw(base_size=14) +
+        legend.spacing.x = unit(0.3, 'cm'),
+        text = element_text(size=14)) +
+    theme_bw(base_size=15) +
     xlim(0,1) + 
     ylim(0,1)
 #  guides(colour = guide_legend(override.aes = list(size=4)), shape = guide_legend(override.aes = list(size=4))) +
 
 
+print("Point plot inset zoom")
 inset_zoom <- ggplot(snpcaller_performance_summary, aes(precision, recall, color=caller, shape=mixture)) + 
     geom_point(size=4) +
     xlim(0.8, 1) +
     ylim(0.5, 1) +
-    theme_bw(base_size=14) +
+    theme_bw(base_size=16) +
     theme(legend.position="none") +
+    theme(text = element_text(size=15)) +
     scale_colour_brewer(palette="Set1") +
     xlab("") +
     ylab("")
 
+print("Combine point plots")
 rect <- data.frame(x1=0.8, x2=1, y1=0.5, y2=1)
 point_plot  <- point_plot_whole + 
-    annotation_custom(ggplotGrob(inset_zoom), xmin=-0.07, xmax=0.75, ymin=0.15, ymax=0.8) + 
-    geom_rect(data=rect, mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2), alpha=0.1, inherit.aes=F, color="#A3A3A3") + 
-    geom_segment(aes(x=0.726, y=0.271, xend=1, yend=0.5), color="#A3A3A3") + 
-    geom_segment(aes(x=0.083, y=0.780, xend=0.8, yend=1), color="#A3A3A3") + 
+    annotation_custom(ggplotGrob(inset_zoom), xmin=-0.05, xmax=0.7, ymin=0.06, ymax=0.92) + 
+    geom_rect(data=rect, mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2), 
+        alpha=0.1, inherit.aes=F, color="#A3A3A3") + 
+    geom_segment(aes(x=0.678, y=0.206, xend=1, yend=0.5), color="#A3A3A3") + 
+    geom_segment(aes(x=0.082, y=0.894, xend=0.8, yend=1), color="#A3A3A3") + 
     scale_colour_brewer(palette="Set1")
 
+print("Box plot")
 box_plot <- ggplot(snpcaller_performance_summary, aes(caller, f1, fill=caller)) + 
   geom_boxplot() + geom_jitter() +
-  theme(legend.position="none") +
-  theme_bw(base_size = 14) + 
+  theme_bw(base_size = 16) + 
+  theme(legend.position="none", 
+    text = element_text(size=15), 
+    axis.text.x = element_text(angle=60, hjust=1)) +
   scale_fill_brewer(palette = "Set1")
 
 
 combined_plots[[1]] <- point_plot
 combined_plots[[2]] <- box_plot
 n_panel <- 2
+print("Combine all plots")
 for (mix in samples){
     print(mix)
     n_panel <- n_panel + 1
@@ -174,9 +183,9 @@ for (mix in samples){
 
 
 ## Arrange the Venndigram
-lay <- rbind(c(1,1,1,2,2,2),
-             c(1,1,1,2,2,2),
-             c(1,1,1,2,2,2),
+lay <- rbind(c(1,1,1,1,2,2),
+             c(1,1,1,1,2,2),
+             c(1,1,1,1,2,2),
              c(3,3,4,4,5,5),
              c(3,3,4,4,5,5),
              c(6,6,7,7,8,8),
@@ -187,6 +196,7 @@ lay <- rbind(c(1,1,1,2,2,2),
 #             c(4,4,4,5,5,5),
 #             c(4,4,4,5,5,5),
 #             c(4,4,4,5,5,5))
+print("Grid all plots")
 p <- grid.arrange(grobs=combined_plots, layout_matrix = lay)
 
 ggsave(file=snakemake@output$snpcaller_performance_figure_pdf, plot=p, width=12, height=12)#, height=12, width=15)

@@ -1,6 +1,7 @@
 rule bwa:
     input:
-        reads = get_fastq,
+        r1 = rules.rm_phix.output.cl_r1,
+        r2 = rules.rm_phix.output.cl_r2,
         ref = ref_seq
     output:
         sortedbam = seq_dir + "/bam/{sample}.{ref_name}.bam"
@@ -11,7 +12,7 @@ rule bwa:
     threads: threads
     shell:
         """
-        bwa mem -k 31 -t {threads} {input.ref[0]} {input[0]} {input[1]} |\
+        bwa mem -k 31 -t {threads} {input.ref[0]} {input.r1} {input.r2} |\
             samtools view -Shb - 2>> {log} |\
             samtools sort -@ {threads} -m 10G - -o {output.sortedbam} >> {log} 2>&1
         """

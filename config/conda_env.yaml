@@ -4,7 +4,6 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - snakemake=5.3.0
   - R=3.5.1
   - fastp=0.19.4
   - bwa=0.7.17

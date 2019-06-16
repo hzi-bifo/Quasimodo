@@ -1,53 +1,72 @@
-## Load parameters from config file
+# Load parameters from config file
 include: "rules/load_config.smk"
 
 assembly_dir = "/".join([project_dir, "results/asssembly"])
 metaquast_dir = "/".join([project_dir, "results/metaquast"])
 assemblers = ["spades", "tadpole", "megahit", "ray", "idba", "abyss", "savage"]
-metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction", 
+metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction",
+                      "Duplication_ratio", "Largest_alignment", "LGA50",
                    "Duplication_ratio", "Largest_alignment", "LGA50", 
-                   "NGA50", "num_misassemblies", "num_mismatches_per_100_kbp"]
+                      "Duplication_ratio", "Largest_alignment", "LGA50",
+                   "Duplication_ratio", "Largest_alignment", "LGA50", 
+                      "Duplication_ratio", "Largest_alignment", "LGA50",
+                   "Duplication_ratio", "Largest_alignment", "LGA50", 
+                      "Duplication_ratio", "Largest_alignment", "LGA50",
+                   "Duplication_ratio", "Largest_alignment", "LGA50", 
+                      "Duplication_ratio", "Largest_alignment", "LGA50",
+                      "NGA50", "num_misassemblies", "num_mismatches_per_100_kbp"]
 
-## Get current working directory
+# Get current working directory
 cwd = os.getcwd()
 
-## Samples to corresponding TM or TM mixture folders
+# Samples to corresponding TM or TM mixture folders
+
+
 def make_mix():
     return ["{}/{}".format(sample.split("-")[0], sample) for sample in sample_list]
 
+
 onsuccess:
     print("The assembly evaluation is done!")
-#    shell("mail -s 'The The assembly evaluation is done' youremail@provider.com")
+#    shell("mail -s 'The assembly evaluation is done' youremail@provider.com")
 
 rule all:
     input:
-        expand("{assemblyDir}/{assembler}/{sample}.{assembler}.scaffolds.fa", 
-            assemblyDir=assembly_dir, sample=list(samples["sample"]), assembler=assemblers),
-        expand("{metaquastDir}/{strain_sample}/report.html", metaquastDir=metaquast_dir, 
-            assembler=assemblers, strain_sample=make_mix()),
+        expand("{assemblyDir}/{assembler}/{sample}.{assembler}.scaffolds.fa",
+               assemblyDir=assembly_dir, sample=list(samples["sample"]), assembler=assemblers),
+        expand("{metaquastDir}/{strain_sample}/report.html", metaquastDir=metaquast_dir,
+               assembler=assemblers, strain_sample=make_mix()),
         expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}_merged.tsv",
-            mix=["TM", "TA"], criteria=metaquast_criteria),
+               mix=["TM", "TA"], criteria=metaquast_criteria),
         expand(results_dir + "/final_figures/assembly_metaquast_evaluation.pdf"),
         expand(results_dir + "/final_tables/assembly_metaquast_ranking.tsv")
-        
 
-## Build index for reference
+
+# Build index for reference
 include: "rules/index.smk"
 
-## Run all consensus assembly tools
+# Remove remaining Phix reads
+include: "rules/rm_phix.smk"
+
+# Run all consensus assembly tools
 include: "rules/assembly.smk"
 
-## Merge read paired ends
+# Merge read paired ends
 rule pear:
     input:
-        reads = get_fastq,
-        assembly_done = expand("{assemblyDir}/{assembler}/{sample}.{assembler}.scaffolds.fa", 
-            assemblyDir=assembly_dir, sample=list(samples["sample"]), 
-            assembler=[i for i in assemblers if i!="savage"])
+        r1 = rules.rm_phix.output.cl_r1,
+        r2 = rules.rm_phix.output.cl_r2,
+        assembly_done = expand("{assemblyDir}/{assembler}/{sample}.{assembler}.scaffolds.fa",
+                               assemblyDir=assembly_dir, sample=list(
+                                   samples["sample"]),
+                               assembler=[i for i in assemblers if i != "savage"])
     output:
-        merged = os.path.abspath(seq_dir + "/pear_merge/{sample}.pear.assembled.fastq"),
-        unmerged_r1 = os.path.abspath(seq_dir + "/pear_merge/{sample}.pear.unassembled.forward.fastq"),
-        unmerged_r2 = os.path.abspath(seq_dir + "/pear_merge/{sample}.pear.unassembled.reverse.fastq")
+        merged = os.path.abspath(
+            seq_dir + "/pear_merge/{sample}.pear.assembled.fastq"),
+        unmerged_r1 = os.path.abspath(
+            seq_dir + "/pear_merge/{sample}.pear.unassembled.forward.fastq"),
+        unmerged_r2 = os.path.abspath(
+            seq_dir + "/pear_merge/{sample}.pear.unassembled.reverse.fastq")
     conda:
         "config/conda_savage_env.yaml"
     params:
@@ -55,15 +74,15 @@ rule pear:
     threads: threads
     shell:
         """
-        pear -j {threads} -f {input.reads[0]} -r {input.reads[1]} -o {params.out}
+        pear -j {threads} -f {input.r1} -r {input.r2} -o {params.out}
         """
 
-## The original script random_split_fastq.py provided by Savage is not suitable for PE fq files converted
-### by BAMToFastq
+# The original script random_split_fastq.py provided by Savage is not suitable for PE fq files converted
+# by BAMToFastq
 rule modify_savage:
     output:
         "modify_savage.done"
-    
+
     conda:
         "config/conda_savage_env.yaml"
     shell:
@@ -75,7 +94,7 @@ rule modify_savage:
         """
 
 
-## Run Savage for haplotype reconstruction
+# Run Savage for haplotype reconstruction
 rule savage_full_ref:
     input:
         merged = rules.pear.output.merged,
@@ -113,7 +132,7 @@ rule rename_savage:
         cp {input} {output}
         """
 
-## Evaluate assemblies using metaquast
+# Evaluate assemblies using metaquast
 rule metaquast:
     input:
         scaffolds = lambda wc: expand(assembly_dir + "/{assembler}/{{sample}}.{assembler}.scaffolds.fa", 
@@ -132,11 +151,11 @@ rule metaquast:
         metaquast.py --unique-mapping -o {params.metaquast_outdir} -R {params.ref} {input.scaffolds}
         """
 
-## Summarize all evaluations
+# Summarize all evaluations
 rule summarize:
     input:
-        expand("{metaquastDir}/{strain_sample}/report.html", metaquastDir=metaquast_dir, 
-            assembler=assemblers, strain_sample=make_mix())
+        expand("{metaquastDir}/{strain_sample}/report.html", metaquastDir=metaquast_dir,
+               assembler=assemblers, strain_sample=make_mix())
     output:
         metaquast_dir + "/summary_for_figure/{mix}.{criteria}_merged.tsv"
     conda:
@@ -149,11 +168,11 @@ rule summarize:
             awk 'NR==1{{print}}$1!="Assemblies"{{print}}'|sed '1s/\.GFP\|\.BAC//g' > {output}
         """
 
-## Visualize the evaluation
+# Visualize the evaluation
 rule visualize:
     input:
-        expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}_merged.tsv", 
-            mix=["TA", "TM"], criteria=metaquast_criteria)
+        expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}_merged.tsv",
+               mix=["TA", "TM"], criteria=metaquast_criteria)
     output:
         figure = results_dir + "/final_figures/assembly_metaquast_evaluation.pdf",
         table = results_dir + "/final_tables/assembly_metaquast_ranking.tsv"
@@ -163,4 +182,3 @@ rule visualize:
         input_dir = metaquast_dir + "/summary_for_figure"
     script:
         "scripts/metaquast_visualize.R"
-
