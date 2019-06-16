@@ -54,7 +54,7 @@ TA-1-0	../HCMV_benchmark_output/data/seqs/reads/TA-1-0.qc.r1.fq.gz	../HCMV_bench
 TA-1-10	../HCMV_benchmark_output/data/seqs/reads/TA-1-10.qc.r1.fq.gz	../HCMV_benchmark_output/data/seqs/reads/TA-1-10.qc.r2.fq.gz
 ...
 ```
-Please modify the paths to the sequencing files accordingly. In this example, the <your project path> is `../HCMV_benchmark_output` and the reads are in the `../HCMV_benchmark_output/data/seqs/reads`.
+Please modify the paths to the sequencing files accordingly. In this example, the `<your project path>` is `../HCMV_benchmark_output` and the reads are in the `../HCMV_benchmark_output/data/seqs/reads`.
 
 
 ### Run the benchmarking
