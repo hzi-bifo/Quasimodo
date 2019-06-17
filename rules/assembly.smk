@@ -6,6 +6,8 @@ rule spades:
         scaffolds = assembly_dir + "/spades/{sample}/scaffolds.fasta",
         renamed_scaffolds = assembly_dir + \
             "/spades/{sample}.spades.scaffolds.fa"
+    conda:
+        "../config/conda_env.yaml"
     params:
         outdir = assembly_dir + "/spades/{sample}"
     threads: threads
@@ -31,6 +33,8 @@ rule tadpole:
             "/tadpole/{sample}/{sample}.tadpole.contigs.fa",
         renamed_scaffolds = assembly_dir + \
             "/tadpole/{sample}.tadpole.scaffolds.fa"
+    conda:
+        "../config/conda_env.yaml"
     threads: threads
     benchmark:
         report_dir + "/benchmarks/{sample}.tadpole.benchmark.txt"
@@ -52,6 +56,8 @@ rule megahit:
             "/megahit/{sample}/{sample}.megahit.contigs.fa",
         renamed_scaffolds = assembly_dir + \
             "/megahit/{sample}.megahit.scaffolds.fa"
+    conda:
+        "../config/conda_env.yaml"
     benchmark:
         report_dir + "/benchmarks/{sample}.megahit.benchmark.txt"
     params:
@@ -73,6 +79,8 @@ rule ray:
     output:
         scaffolds = assembly_dir + "/ray/{sample}/Scaffolds.fasta",
         renamed_scaffolds = assembly_dir + "/ray/{sample}.ray.scaffolds.fa"
+    conda:
+        "../config/conda_env.yaml"
     benchmark:
         report_dir + "/benchmarks/{sample}.ray.benchmark.txt"
     params:
@@ -92,6 +100,8 @@ rule idba:
     output:
         scaffolds = assembly_dir + "/idba/{sample}/scaffold.fa",
         renamed_scaffolds = assembly_dir + "/idba/{sample}.idba.scaffolds.fa"
+    conda:
+        "../config/conda_env.yaml"
     benchmark:
         report_dir + "/benchmarks/{sample}.idba.benchmark.txt"
     params:
@@ -114,6 +124,8 @@ rule abyss:
         scaffolds = assembly_dir + \
             "/abyss/{sample}/{sample}.abyss-scaffolds.fa",
         renamed_scaffolds = assembly_dir + "/abyss/{sample}.abyss.scaffolds.fa"
+    conda:
+        "../config/conda_env.yaml"
     benchmark:
         report_dir + "/benchmarks/{sample}.abyss.benchmark.txt"
     params:
