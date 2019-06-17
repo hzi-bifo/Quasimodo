@@ -143,8 +143,8 @@ point_plot  <- point_plot_whole +
     annotation_custom(ggplotGrob(inset_zoom), xmin=-0.05, xmax=0.7, ymin=0.06, ymax=0.92) + 
     geom_rect(data=rect, mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2), 
         alpha=0.1, inherit.aes=F, color="#A3A3A3") + 
-    geom_segment(aes(x=0.678, y=0.206, xend=1, yend=0.5), color="#A3A3A3") + 
-    geom_segment(aes(x=0.082, y=0.894, xend=0.8, yend=1), color="#A3A3A3") + 
+    geom_segment(aes(x=0.678, y=0.211, xend=1, yend=0.5), color="#A3A3A3") + 
+    geom_segment(aes(x=0.083, y=0.892, xend=0.8, yend=1), color="#A3A3A3") + 
     scale_colour_brewer(palette="Set1")
 
 print("Box plot")
