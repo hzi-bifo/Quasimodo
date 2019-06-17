@@ -105,7 +105,7 @@ rule idba:
     benchmark:
         report_dir + "/benchmarks/{sample}.idba.benchmark.txt"
     params:
-        merged_pe = seq_dir + "/qc_fq/{sample}_12.fa",
+        merged_pe = seq_dir + "/cl_fq/{sample}_12.fa",
         idba_out = assembly_dir + "/idba/{sample}"
     threads: threads
     shell:
