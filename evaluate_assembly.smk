@@ -3,16 +3,9 @@ include: "rules/load_config.smk"
 
 assembly_dir = "/".join([project_dir, "results/asssembly"])
 metaquast_dir = "/".join([project_dir, "results/metaquast"])
-assemblers = ["spades", "tadpole", "megahit", "ray", "idba", "abyss", "savage"]
+assemblers = ["spades", "metaspades", "tadpole",
+              "megahit", "ray", "idba", "abyss", "savage"]
 metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction",
-                      "Duplication_ratio", "Largest_alignment", "LGA50",
-                   "Duplication_ratio", "Largest_alignment", "LGA50", 
-                      "Duplication_ratio", "Largest_alignment", "LGA50",
-                   "Duplication_ratio", "Largest_alignment", "LGA50", 
-                      "Duplication_ratio", "Largest_alignment", "LGA50",
-                   "Duplication_ratio", "Largest_alignment", "LGA50", 
-                      "Duplication_ratio", "Largest_alignment", "LGA50",
-                   "Duplication_ratio", "Largest_alignment", "LGA50", 
                       "Duplication_ratio", "Largest_alignment", "LGA50",
                       "NGA50", "num_misassemblies", "num_mismatches_per_100_kbp"]
 
@@ -100,8 +93,10 @@ rule savage_full_ref:
         merged = rules.pear.output.merged,
         unmerged_r1 = rules.pear.output.unmerged_r1,
         unmerged_r2 = rules.pear.output.unmerged_r2,
-        full_ref = lambda w: merlin_ref if w.sample.startswith("TM") else ad_ref,
-        full_ref_fai = lambda w: merlin_ref + ".fai" if w.sample.startswith("TM") else ad_ref + ".fai",
+        full_ref = lambda w: merlin_ref if w.sample.startswith(
+            "TM") else ad_ref,
+        full_ref_fai = lambda w: merlin_ref + \
+            ".fai" if w.sample.startswith("TM") else ad_ref + ".fai",
         modified = rules.modify_savage.output
     output:
         assembly_dir + "/savage/{sample}/contigs_stage_c.fasta"
@@ -135,20 +130,22 @@ rule rename_savage:
 # Evaluate assemblies using metaquast
 rule metaquast:
     input:
-        scaffolds = lambda wc: expand(assembly_dir + "/{assembler}/{{sample}}.{assembler}.scaffolds.fa", 
-            assembler=assemblers),
-        ref_fai = lambda wc: [tb_ref + ".fai", ad_ref + ".fai"] if 
-                wc.mix == "TA" else [tb_ref + ".fai", merlin_ref + ".fai"]
+        scaffolds = lambda wc: expand(assembly_dir + "/{assembler}/{{sample}}.{assembler}.scaffolds.fa",
+                                      assembler=assemblers),
+        ref_fai = lambda wc: [tb_ref + ".fai", ad_ref + ".fai"] if
+        wc.mix == "TA" else [tb_ref + ".fai", merlin_ref + ".fai"]
     output:
         report = metaquast_dir + "/{mix}/{sample, [A-Z]+-[0-9\-]+}/report.html"
     conda:
         "config/conda_env.yaml"
+    threads: threads
     params:
         metaquast_outdir = metaquast_dir + "/{mix}/{sample}",
-        ref = lambda wc: ",".join([tb_ref, ad_ref]) if wc.mix == "TA" else ",".join([tb_ref, merlin_ref])
+        ref = lambda wc: ",".join(
+            [tb_ref, ad_ref]) if wc.mix == "TA" else ",".join([tb_ref, merlin_ref])
     shell:
         """
-        metaquast.py --unique-mapping -o {params.metaquast_outdir} -R {params.ref} {input.scaffolds}
+        metaquast.py --unique-mapping -o {params.metaquast_outdir} -R {params.ref} {input.scaffolds} -t {threads}
         """
 
 # Summarize all evaluations

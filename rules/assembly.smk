@@ -20,6 +20,28 @@ rule spades:
         cp {output.scaffolds} {output.renamed_scaffolds}
         """
 
+rule metaspades:
+    input:
+        r1 = rules.rm_phix.output.cl_r1,
+        r2 = rules.rm_phix.output.cl_r2
+    output:
+        scaffolds = assembly_dir + "/metaspades/{sample}/scaffolds.fasta",
+        renamed_scaffolds = assembly_dir + \
+            "/metaspades/{sample}.metaspades.scaffolds.fa"
+    conda:
+        "../config/conda_env.yaml"
+    params:
+        outdir = assembly_dir + "/metaspades/{sample}"
+    threads: threads
+    benchmark:
+        report_dir + "/benchmarks/{sample}.metaspades.benchmark.txt"
+    shell:
+        """
+        metaspades.py -k 21,33,55,77,99,127 -1 {input.r1} \
+            -2 {input.r2} -o {params.outdir} -t {threads}
+        cp {output.scaffolds} {output.renamed_scaffolds}
+        """
+
 rule tadpole:
     input:
         r1 = rules.rm_phix.output.cl_r1,
