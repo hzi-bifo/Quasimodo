@@ -110,8 +110,8 @@ for(vcf in vcf_list){
     mc <- vcfMutationContext(vcf, ref_name, ref_fh, study)#sample)
 
     if (!endsWith(sample, "-1-0") & !endsWith(sample, "-0-1")){
-	    tp_vcf <- file.path(pathname, "tp", gsub("(\\.vcf)$", "\\.tp\\1", basename, perl=T))
-	    fp_vcf <- file.path(pathname, "fp", gsub("(\\.vcf)$", "\\.fp\\1", basename, perl=T))
+	    tp_vcf <- file.path(pathname, "tp", gsub("\\.filtered", "\\.tp", basename, perl=T))
+	    fp_vcf <- file.path(pathname, "fp", gsub("\\.filtered", "\\.fp", basename, perl=T))
 
         tp_mc <- vcfMutationContext(tp_vcf, ref_name, ref_fh, paste(sample, "(TP)", sep=" "))
         fp_mc <- vcfMutationContext(fp_vcf, ref_name, ref_fh, paste(sample, "(FP)", sep=" "))

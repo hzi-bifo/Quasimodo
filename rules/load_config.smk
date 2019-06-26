@@ -30,6 +30,11 @@ results_dir = "/".join([project_dir, "results"])
 # Number of threads to use
 threads = config["threads"]
 
+# Wildcards constrains
+wildcard_constraints:
+    sample = "[^\.\/]+",
+    ref_name = "[^\.\/]+"
+
 # Load read pairs
 
 

@@ -14,13 +14,24 @@ def extract_tp_fp_snp(vcf_file, snp_file, tp_out, fp_out):
     @param tp_out: The output of TP SNPs identified by caller which are originated from genome differences. 
     @param fp_out: The output of FP SNPs identified by caller by false calling. 
     """
-    genome_snp = r'''awk -F"\t" '$2!="."&&$3!="."{{print $1, ".", $2, $3}}' OFS="\t" {}'''.format(snp_file)
-    snp_by_caller = r'''awk -F"\t" '$4~/^[ACGT]$/&&$5~/^[ACGT]$/&&$6>=20' {}'''.format(vcf_file)
+    genome_snp = r'''awk -F"\t" '$2!="."&&$3!="."{{print $1, ".", $2, $3}}' OFS="\t" {}'''.format(
+        snp_file)
+    snp_by_caller = r'''awk -F"\t" '$4~/^[ACGT]$/&&$5~/^[ACGT]$/&&$6>=20' {}'''.format(
+        vcf_file)
+    print(vcf_file)
+    filter_qual_cmd = r'''(grep -E "^#" {};{}) > {}.filtered.vcf'''.format(vcf_file,
+                                                                           snp_by_caller, vcf_file[:-4])
+    # print(filter_qual_cmd)
+    tp_cmd = r'''(grep -E "^#" {};fgrep -wf <({}) <({})) > {}'''.format(vcf_file,
+                                                                        genome_snp, snp_by_caller, tp_out)
+    fp_cmd = r'''(grep -E "^#" {};fgrep -wvf <({}) <({})) > {}'''.format(vcf_file,
+                                                                         genome_snp, snp_by_caller, fp_out)
 
-    tp_cmd = r'''(grep -E "^#" {};fgrep -wf <({}) <({})) > {}'''.format(vcf_file, genome_snp, snp_by_caller, tp_out)
-    fp_cmd = r'''(grep -E "^#" {};fgrep -wvf <({}) <({})) > {}'''.format(vcf_file, genome_snp, snp_by_caller, fp_out)
+    filtered = subprocess.Popen(
+        filter_qual_cmd, shell=True, executable="/bin/bash")
     tp = subprocess.Popen(tp_cmd, shell=True, executable="/bin/bash")
     fp = subprocess.Popen(fp_cmd, shell=True, executable="/bin/bash")
+
 
 if __name__ == "__main__":
     usage = r'''
@@ -48,4 +59,3 @@ if __name__ == "__main__":
                         help="the output VCF file for FP")
     args = parser.parse_args()
     extract_tp_fp_snp(args.vcffile, args.snpfile, args.tpout, args.fpout)
-

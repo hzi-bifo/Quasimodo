@@ -42,7 +42,7 @@ def get_ref_dir(w):
         ref = tb_ref
     else:
         ref = ad_ref
-    return os.path.dirname(ref)+"/"
+    return os.path.dirname(ref) + "/"
 
 
 # Selected caller for mutation context analysis
@@ -77,7 +77,8 @@ rule all:
         mutationcontext_figure = expand(results_dir + "/final_figures/{mix}.{selected_snpcaller}.mutationcontext.total.tp.fp.pdf",
                                         mix=["TM", "TA"], selected_snpcaller=selected_snpcaller),
         averaged_mc_figure = expand(results_dir + "/final_figures/{mix}.{selected_snpcaller}.mutationcontext.total.tp.fp.averaged.pdf",
-                                    mix=["TM", "TA"], selected_snpcaller=selected_snpcaller)
+                                    mix=["TM", "TA"], selected_snpcaller=selected_snpcaller),
+        fp_compare_figure = results_dir + "/final_figures/snpcaller_fp_snp_compare.pdf"
 
 rule cp_clc:
     input: "data/clc/{sample}.{ref}.clc.vcf"
@@ -113,6 +114,9 @@ include: "rules/snpEvaluate.smk"
 
 # Mutation context analysis for called SNPs
 include: "rules/mutationcontext.smk"
+
+# Compare the FP SNps
+include: "rules/compare_FP.smk"
 
 onsuccess:
     print("The SNPs calling evaluation is done!")

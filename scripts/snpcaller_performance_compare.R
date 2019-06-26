@@ -2,7 +2,7 @@ library(tidyverse)
 library(VennDiagram)
 library(gridExtra)
 
-## Two mixtures
+## VCF files for mixtures
 mix_vcf <- snakemake@input$mix
 #all_caller_table <- data.frame(caller=character(), mixture=character(), 
 #                               genome=character(), position=character(), 
@@ -62,29 +62,33 @@ for (file in mix_vcf){
     })
 
     #all_caller_table <- rbind(all_caller_table, snp_table)
-        if (nrow(snp_table) > 0){
-            snp_table <- snp_table[,1:3]
-            colnames(snp_table) <- c("position", "ref", "alt")
-            snp_vector <- do.call(paste, c(snp_table %>% filter(ref %in% c("A", "C", "G" ,"T"), 
-                                                  alt %in% c("A", "C", "G" ,"T")), sep="-"))
-            snp_identify_count <- length(snp_vector)
-            tp_count <- length(intersect(snp_vector, genome_diff_vector))
-            fp_count <- length(setdiff(snp_vector, genome_diff_vector))
-            fn_count <- length(setdiff(genome_diff_vector, snp_vector))
-            precision <- round(tp_count/snp_identify_count, 3)
-            recall <- round(tp_count/genome_diff_count, 3)
-            f1 <- round(2*(precision*recall)/(precision+recall), 3)
+    if (nrow(snp_table) > 0){
+        snp_table <- snp_table[,1:3]
+        colnames(snp_table) <- c("position", "ref", "alt")
+        snp_vector <- do.call(paste, c(snp_table %>% filter(ref %in% c("A", "C", "G" ,"T"), 
+                                                alt %in% c("A", "C", "G" ,"T")), sep="-"))
+        snp_identify_count <- length(snp_vector)
+        tp_count <- length(intersect(snp_vector, genome_diff_vector))
+        fp_count <- length(setdiff(snp_vector, genome_diff_vector))
+        fn_count <- length(setdiff(genome_diff_vector, snp_vector))
+        precision <- round(tp_count/snp_identify_count, 3)
+        recall <- round(tp_count/genome_diff_count, 3)
+        f1 <- round(2*(precision*recall)/(precision+recall), 3)
+        if (snpcaller=="varscan" && sample=="TA-1-1"){
+            print(setdiff(snp_vector, genome_diff_vector))
+            print(fp_count)
         }
-        else{
-            snp_vector <- c()
-            snp_identify_count <- 0
-            tp_count <- 0
-            fp_count <- 0
-            fn_count <- 0
-            precision <- NA
-            recall <- NA
-            f1 <- NA
-        }
+    }
+    else{
+        snp_vector <- c()
+        snp_identify_count <- 0
+        tp_count <- 0
+        fp_count <- 0
+        fn_count <- 0
+        precision <- NA
+        recall <- NA
+        f1 <- NA
+    }
 
         #snp_table$caller <- snpcaller
         #snp_table$mixture <- sample
@@ -137,6 +141,7 @@ inset_zoom <- ggplot(snpcaller_performance_summary, aes(precision, recall, color
     xlab("") +
     ylab("")
 
+# Scatter plot
 print("Combine point plots")
 rect <- data.frame(x1=0.8, x2=1, y1=0.5, y2=1)
 point_plot  <- point_plot_whole + 
@@ -147,6 +152,7 @@ point_plot  <- point_plot_whole +
     geom_segment(aes(x=0.083, y=0.892, xend=0.8, yend=1), color="#A3A3A3") + 
     scale_colour_brewer(palette="Set1")
 
+# Boxplot
 print("Box plot")
 box_plot <- ggplot(snpcaller_performance_summary, aes(caller, f1, fill=caller)) + 
   geom_boxplot() + geom_jitter() +
@@ -165,6 +171,7 @@ for (mix in samples){
     print(mix)
     n_panel <- n_panel + 1
     futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
+    # Venndiagram
     plot <- venn.diagram(x=snp_list[[mix]],
             filename = NULL,
             main = mix,

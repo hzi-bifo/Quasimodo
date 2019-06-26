@@ -29,7 +29,7 @@ rule all:
                assemblyDir=assembly_dir, sample=list(samples["sample"]), assembler=assemblers),
         expand("{metaquastDir}/{strain_sample}/report.html", metaquastDir=metaquast_dir,
                assembler=assemblers, strain_sample=make_mix()),
-        expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}_merged.tsv",
+        expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}.merged.tsv",
                mix=["TM", "TA"], criteria=metaquast_criteria),
         expand(results_dir + "/final_figures/assembly_metaquast_evaluation.pdf"),
         expand(results_dir + "/final_tables/assembly_metaquast_ranking.tsv")
@@ -49,10 +49,10 @@ rule pear:
     input:
         r1 = rules.rm_phix.output.cl_r1,
         r2 = rules.rm_phix.output.cl_r2,
-        assembly_done = expand("{assemblyDir}/{assembler}/{sample}.{assembler}.scaffolds.fa",
-                               assemblyDir=assembly_dir, sample=list(
-                                   samples["sample"]),
-                               assembler=[i for i in assemblers if i != "savage"])
+    #     assembly_done = expand("{assemblyDir}/{assembler}/{sample}.{assembler}.scaffolds.fa",
+    #                            assemblyDir=assembly_dir, sample=list(
+    #                                samples["sample"]),
+    #                            assembler=[i for i in assemblers if i != "savage"])
     output:
         merged = os.path.abspath(
             seq_dir + "/pear_merge/{sample}.pear.assembled.fastq"),
@@ -154,7 +154,7 @@ rule summarize:
         expand("{metaquastDir}/{strain_sample}/report.html", metaquastDir=metaquast_dir,
                assembler=assemblers, strain_sample=make_mix())
     output:
-        metaquast_dir + "/summary_for_figure/{mix}.{criteria}_merged.tsv"
+        metaquast_dir + "/summary_for_figure/{mix}.{criteria}.merged.tsv"
     conda:
         "config/conda_env.yaml"
     params:
@@ -168,7 +168,7 @@ rule summarize:
 # Visualize the evaluation
 rule visualize:
     input:
-        expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}_merged.tsv",
+        expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}.merged.tsv",
                mix=["TA", "TM"], criteria=metaquast_criteria)
     output:
         figure = results_dir + "/final_figures/assembly_metaquast_evaluation.pdf",
