@@ -70,8 +70,8 @@ rule all:
                      sample_ref=sample_ref, snpcallers=snpcallers),
         snps = expand(
             snp_dir + "/nucmer/{genome_diff}.maskrepeat.snps", genome_diff=genome_diff_list),
-        tp = expand(snpcall_dir + "/{snpcallers}/tp/{sample_ref}.{snpcallers}.tp.vcf",
-                    snpcall_dir=snpcall_dir, snpcallers=snpcallers, sample_ref=sample_ref_tp),
+        fp = expand(snpcall_dir + "/{snpcallers}/fp/{sample_ref}.{snpcallers}.fp.vcf",
+                    snpcall_dir=snpcall_dir, snpcallers=snpcallers, sample_ref=sample_ref),
         snp_profile_figure = expand(results_dir + "/final_figures/{mix}.{selected_snpcaller}.snp.profile.pdf",
                                     mix=["TM", "TA"], selected_snpcaller=selected_snpcaller),
         mutationcontext_figure = expand(results_dir + "/final_figures/{mix}.{selected_snpcaller}.mutationcontext.total.tp.fp.pdf",
