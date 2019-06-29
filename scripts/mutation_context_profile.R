@@ -22,7 +22,7 @@ filterVCF <- function(vcf){
 						"numeric", "NULL", "character"))
 	colnames(var) <- c("Position", "ref", "alt", "qual", "Frequency")
   	var_filtered <-dplyr::filter(var, ref %in% c("A", "T", "C", "G"), alt %in% c("A", "T", "C", "G"))
-	var_filtered$Frequency <- as.numeric(gsub(".*AF=(0\\.[0-9]+);.*$", "\\1", var_filtered$Frequency, perl=T))
+	var_filtered$Frequency <- as.numeric(gsub(".*AF=([01]\\.[0-9]+);.*$", "\\1", var_filtered$Frequency, perl=T))
     return(var_filtered)
 }
 
