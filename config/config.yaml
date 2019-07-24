@@ -3,5 +3,6 @@ MerlinRef: ref/Merlin.BAC.fa
 TB40ERef: ref/TB40E.GFP.fa
 AD169Ref: ref/AD169.BAC.fa
 PhixRef: ref/Phix.fa
-projectPath: ../HCMV_benchmark_output
+projectPath: ../HCMV_benchmark_output_test
 threads: 2
+runOnReads: false

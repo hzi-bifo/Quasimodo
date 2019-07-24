@@ -1,0 +1,32 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##bcftoolsVersion=1.9+htslib-1.9
+##bcftoolsCommand=mpileup -Ou -f /net/sgi/viral_genomics/MHH/cmv_mixed_strain/HCMV_benchmark/ref/TB40E.GFP.fa ../HCMV_benchmark_output/data/seqs/bam/TA-1-0.TB40E.rmdup.bam
+##reference=file:///net/sgi/viral_genomics/MHH/cmv_mixed_strain/HCMV_benchmark/ref/TB40E.GFP.fa
+##contig=<ID=TB40E-GFP_MM_ann,length=237928>
+##ALT=<ID=*,Description="Represents allele(s) other than observed.">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=IDV,Number=1,Type=Integer,Description="Maximum number of reads supporting an indel">
+##INFO=<ID=IMF,Number=1,Type=Float,Description="Maximum fraction of reads supporting an indel">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw read depth">
+##INFO=<ID=VDB,Number=1,Type=Float,Description="Variant Distance Bias for filtering splice-site artefacts in RNA-seq data (bigger is better)",Version="3">
+##INFO=<ID=RPB,Number=1,Type=Float,Description="Mann-Whitney U test of Read Position Bias (bigger is better)">
+##INFO=<ID=MQB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality Bias (bigger is better)">
+##INFO=<ID=BQB,Number=1,Type=Float,Description="Mann-Whitney U test of Base Quality Bias (bigger is better)">
+##INFO=<ID=MQSB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality vs Strand Bias (bigger is better)">
+##INFO=<ID=SGB,Number=1,Type=Float,Description="Segregation based metric.">
+##INFO=<ID=MQ0F,Number=1,Type=Float,Description="Fraction of MQ0 reads (smaller is better)">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=ICB,Number=1,Type=Float,Description="Inbreeding Coefficient Binomial test (bigger is better)">
+##INFO=<ID=HOB,Number=1,Type=Float,Description="Bias in the number of HOMs number (smaller is better)">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Average mapping quality">
+##bcftools_callVersion=1.9+htslib-1.9
+##bcftools_callCommand=call -p 0.01 --ploidy 1 -mv -Ob; Date=Sun Jun 16 22:34:02 2019
+##bcftools_viewVersion=1.9+htslib-1.9
+##bcftools_viewCommand=view -i %QUAL>=20 -; Date=Sun Jun 16 22:48:41 2019
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	../HCMV_benchmark_output/data/seqs/bam/TA-1-0.TB40E.rmdup.bam
+TB40E-GFP_MM_ann	229125	.	G	A	225	.	DP=278;VDB=0.920588;SGB=-0.693147;MQSB=1;MQ0F=0;AC=1;AN=1;DP4=0,0,251,16;MQ=60	GT:PL	1:255,0

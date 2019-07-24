@@ -3,7 +3,7 @@ include: "rules/load_config.smk"
 
 assembly_dir = "/".join([project_dir, "results/asssembly"])
 metaquast_dir = "/".join([project_dir, "results/metaquast"])
-assemblers = ["spades", "metaspades", "tadpole",
+assemblers = ["spades", "metaspades", "tadpole",  # "haploflow",
               "megahit", "ray", "idba", "abyss", "savage"]
 metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction",
                       "Duplication_ratio", "Largest_alignment", "LGA50",
@@ -38,94 +38,110 @@ rule all:
 # Build index for reference
 include: "rules/index.smk"
 
-# Remove remaining Phix reads
-include: "rules/rm_phix.smk"
+# If not run on reads, copy the resulting scaffolds provided within the software for benchmarking
+if not run_on_reads:
+    # Extract assembly
+    if not os.path.exists(cd + "/data/assembly"):
+        shell("tar -xzvf {} -C {}".format(cd + "/data/assembly.tar.gz",
+                                          cd + "/data/"))
 
-# Run all consensus assembly tools
-include: "rules/assembly.smk"
+    rule cp_assembly:
+        input: cd + \
+            "/data/assembly/{assembler}/{sample}.{assembler}.scaffolds.fa"
+        output: assembly_dir + "/{assembler}/{sample}.{assembler}.scaffolds.fa"
+        shell:
+            """
+            cp {input} {output}
+            """
 
-# Merge read paired ends
-rule pear:
-    input:
-        r1 = rules.rm_phix.output.cl_r1,
-        r2 = rules.rm_phix.output.cl_r2,
-    #     assembly_done = expand("{assemblyDir}/{assembler}/{sample}.{assembler}.scaffolds.fa",
-    #                            assemblyDir=assembly_dir, sample=list(
-    #                                samples["sample"]),
-    #                            assembler=[i for i in assemblers if i != "savage"])
-    output:
-        merged = os.path.abspath(
-            seq_dir + "/pear_merge/{sample}.pear.assembled.fastq"),
-        unmerged_r1 = os.path.abspath(
-            seq_dir + "/pear_merge/{sample}.pear.unassembled.forward.fastq"),
-        unmerged_r2 = os.path.abspath(
-            seq_dir + "/pear_merge/{sample}.pear.unassembled.reverse.fastq")
-    conda:
-        "config/conda_savage_env.yaml"
-    params:
-        out = seq_dir + "/pear_merge/{sample}.pear"
-    threads: threads
-    shell:
-        """
-        pear -j {threads} -f {input.r1} -r {input.r2} -o {params.out}
-        """
+else:
+    # Remove remaining Phix reads
+    include: "rules/rm_phix.smk"
 
-# The original script random_split_fastq.py provided by Savage is not suitable for PE fq files converted
-# by BAMToFastq
-rule modify_savage:
-    output:
-        "modify_savage.done"
+    # Run all consensus assembly tools
+    include: "rules/assembly.smk"
 
-    conda:
-        "config/conda_savage_env.yaml"
-    shell:
-        """
-        path_savage=${{PATH%%/bin:*}}
-        mv $path_savage/opt/savage-0.4.0/scripts/random_split_fastq.{{py,bak}}
-        cp program/random_split_fastq.py $path_savage/opt/savage-0.4.0/scripts/random_split_fastq.py
-        touch {output}
-        """
+    # Merge read paired ends
+    rule pear:
+        input:
+            r1 = rules.rm_phix.output.cl_r1,
+            r2 = rules.rm_phix.output.cl_r2,
+        #     assembly_done = expand("{assemblyDir}/{assembler}/{sample}.{assembler}.scaffolds.fa",
+        #                            assemblyDir=assembly_dir, sample=list(
+        #                                samples["sample"]),
+        #                            assembler=[i for i in assemblers if i != "savage"])
+        output:
+            merged = os.path.abspath(
+                seq_dir + "/pear_merge/{sample}.pear.assembled.fastq"),
+            unmerged_r1 = os.path.abspath(
+                seq_dir + "/pear_merge/{sample}.pear.unassembled.forward.fastq"),
+            unmerged_r2 = os.path.abspath(
+                seq_dir + "/pear_merge/{sample}.pear.unassembled.reverse.fastq")
+        conda:
+            "config/conda_savage_env.yaml"
+        params:
+            out = seq_dir + "/pear_merge/{sample}.pear"
+        threads: threads
+        shell:
+            """
+            pear -j {threads} -f {input.r1} -r {input.r2} -o {params.out}
+            """
 
+    # The original script random_split_fastq.py provided by Savage is not suitable for PE fq files converted
+    # by BAMToFastq
+    rule modify_savage:
+        output:
+            "modify_savage.done"
 
-# Run Savage for haplotype reconstruction
-rule savage_full_ref:
-    input:
-        merged = rules.pear.output.merged,
-        unmerged_r1 = rules.pear.output.unmerged_r1,
-        unmerged_r2 = rules.pear.output.unmerged_r2,
-        full_ref = lambda w: merlin_ref if w.sample.startswith(
-            "TM") else ad_ref,
-        full_ref_fai = lambda w: merlin_ref + \
-            ".fai" if w.sample.startswith("TM") else ad_ref + ".fai",
-        modified = rules.modify_savage.output
-    output:
-        assembly_dir + "/savage/{sample}/contigs_stage_c.fasta"
-    conda:
-        "config/conda_savage_env.yaml"
-    benchmark:
-        report_dir + "/benchmarks/{sample}.savage.benchmark.txt"
-    params:
-        cwd = cwd,
-        savage_sample_dir = assembly_dir + "/savage/{sample}"
-    threads: threads
-    shell:
-        """
-        mkdir -p {params.savage_sample_dir}
-        cd {params.savage_sample_dir}
-        savage -t {threads} --ref {input.full_ref} -m 150 --split 4 --merge_contigs 0 \
-            --contig_len_stage_c 50 -s {input.merged} -p1 {input.unmerged_r1} -p2 {input.unmerged_r2}
-        cd {params.cwd}
-        """
+        conda:
+            "config/conda_savage_env.yaml"
+        shell:
+            """
+            path_savage=${{PATH%%/bin:*}}
+            mv $path_savage/opt/savage-0.4.0/scripts/random_split_fastq.{{py,bak}}
+            cp program/random_split_fastq.py $path_savage/opt/savage-0.4.0/scripts/random_split_fastq.py
+            touch {output}
+            """
 
-rule rename_savage:
-    input:
-        rules.savage_full_ref.output
-    output:
-        assembly_dir + "/savage/{sample}.savage.scaffolds.fa"
-    shell:
-        """
-        cp {input} {output}
-        """
+    # Run Savage for haplotype reconstruction
+    rule savage_full_ref:
+        input:
+            merged = rules.pear.output.merged,
+            unmerged_r1 = rules.pear.output.unmerged_r1,
+            unmerged_r2 = rules.pear.output.unmerged_r2,
+            full_ref = lambda w: merlin_ref if w.sample.startswith(
+                "TM") else ad_ref,
+            full_ref_fai = lambda w: merlin_ref + \
+                ".fai" if w.sample.startswith("TM") else ad_ref + ".fai",
+            modified = rules.modify_savage.output
+        output:
+            assembly_dir + "/savage/{sample}/contigs_stage_c.fasta"
+        conda:
+            "config/conda_savage_env.yaml"
+        benchmark:
+            report_dir + "/benchmarks/{sample}.savage.benchmark.txt"
+        params:
+            cwd = cwd,
+            savage_sample_dir = assembly_dir + "/savage/{sample}"
+        threads: threads
+        shell:
+            """
+            mkdir -p {params.savage_sample_dir}
+            cd {params.savage_sample_dir}
+            savage -t {threads} --ref {input.full_ref} -m 150 --split 4 --merge_contigs 0 \
+                --contig_len_stage_c 50 -s {input.merged} -p1 {input.unmerged_r1} -p2 {input.unmerged_r2}
+            cd {params.cwd}
+            """
+
+    rule rename_savage:
+        input:
+            rules.savage_full_ref.output
+        output:
+            assembly_dir + "/savage/{sample}.savage.scaffolds.fa"
+        shell:
+            """
+            cp {input} {output}
+            """
 
 # Evaluate assemblies using metaquast
 rule metaquast:

@@ -88,7 +88,7 @@ rule megahit:
     threads: threads
     shell:
         """
-        rmdir {params.megahit_out}
+        rm -rf {params.megahit_out}
         megahit -t {threads} --continue --k-min 21 --k-max 151 -1 {input.r1} \
             -2 {input.r2} -o {params.megahit_out}  --out-prefix {params.prefix}
         cp {output.scaffolds} {output.renamed_scaffolds}
@@ -110,7 +110,7 @@ rule ray:
     threads: threads
     shell:
         """
-        rmdir {params.ray_out}
+        rm -rf {params.ray_out}
         mpiexec -n {threads} Ray -k31 -p {input.r1} {input.r2} -o {params.ray_out}
         cp {output.scaffolds} {output.renamed_scaffolds}
         """
@@ -132,7 +132,7 @@ rule idba:
     threads: threads
     shell:
         """
-        rmdir {params.idba_out}
+        rm -rf {params.idba_out}
         fq2fa --merge {input.r1} {input.r2} {params.merged_pe}
         idba_ud -r {params.merged_pe} --num_threads {threads} -o {params.idba_out}
         cp {output.scaffolds} {output.renamed_scaffolds}

@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -- coding: utf-8 --
 # @Author: ZL Deng
 # @Date:   2018-08-7 11:54:40
 
 import argparse
 import subprocess
-from os import path
+import os
 from argparse import RawTextHelpFormatter
 
 
@@ -15,10 +16,10 @@ def extract_tp_fp_snp(vcf_file, snp_file):
     @param tp_out: The output of TP SNPs identified by caller which are originated from genome differences. 
     @param fp_out: The output of FP SNPs identified by caller by false calling. 
     """
-    dirname = path.dirname(vcf_file)
-    fname_wo_ext = path.basename(vcf_file)[:-4]
+    dirname = os.path.dirname(vcf_file)
+    fname_wo_ext = os.path.basename(vcf_file)[:-4]
     filtered_out = vcf_file[:-4] + ".filtered.vcf"
-    fp_out = path.join(dirname, "fp", fname_wo_ext + ".fp.vcf")
+    fp_out = os.path.join(dirname, "fp", fname_wo_ext + ".fp.vcf")
 
     snp_by_caller = r'''awk -F"\t" '$4~/^[ACGT]$/&&$5~/^[ACGT]$/&&$6>=20' {}'''.format(
         vcf_file)
@@ -29,13 +30,15 @@ def extract_tp_fp_snp(vcf_file, snp_file):
     filtered = subprocess.Popen(
         filter_qual_cmd, shell=True, executable="/bin/bash")
     filtered.communicate()
-    if path.basename(vcf_file).split(".")[0].endswith(("-1-0", "-0-1")):
+    if os.path.basename(vcf_file).split(".")[0].endswith(("-1-0", "-0-1")):
         fp_cmd = r'''cp {} {}'''.format(filtered_out, fp_out)
         fp = subprocess.Popen(fp_cmd, shell=True, executable="/bin/bash")
         fp.communicate()
 
     else:
-        tp_out = path.join(dirname, "tp", fname_wo_ext + ".tp.vcf")
+        if not os.path.exists(os.path.join(dirname, "tp")):
+            os.makedirs(os.path.join(dirname, "tp"))
+        tp_out = os.path.join(dirname, "tp", fname_wo_ext + ".tp.vcf")
         genome_snp = r'''awk -F"\t" '$2!="."&&$3!="."{{print $1, ".", $2, $3}}' OFS="\t" {}'''.format(
             snp_file)
 

@@ -74,10 +74,6 @@ for (file in mix_vcf){
         precision <- round(tp_count/snp_identify_count, 3)
         recall <- round(tp_count/genome_diff_count, 3)
         f1 <- round(2*(precision*recall)/(precision+recall), 3)
-        if (snpcaller=="varscan" && sample=="TA-1-1"){
-            print(setdiff(snp_vector, genome_diff_vector))
-            print(fp_count)
-        }
     }
     else{
         snp_vector <- c()
@@ -168,7 +164,6 @@ combined_plots[[2]] <- box_plot
 n_panel <- 2
 print("Combine all plots")
 for (mix in samples){
-    print(mix)
     n_panel <- n_panel + 1
     futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
     # Venndiagram

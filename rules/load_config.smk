@@ -18,7 +18,9 @@ tb_ref = os.path.abspath(config["TB40ERef"])
 ad_ref = os.path.abspath(config["AD169Ref"])
 phix_ref = os.path.abspath(config["PhixRef"])
 
+run_on_reads = config["runOnReads"]
 
+cd = os.path.dirname(os.path.abspath(__name__))
 # Define the folder to put the outputs
 project_dir = config["projectPath"].rstrip("/")
 

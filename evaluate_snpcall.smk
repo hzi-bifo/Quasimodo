@@ -81,7 +81,7 @@ rule all:
         fp_compare_figure = results_dir + "/final_figures/snpcaller_fp_snp_compare.pdf"
 
 rule cp_clc:
-    input: "data/clc/{sample}.{ref}.clc.vcf"
+    input: cd + "/data/snp/clc/{sample}.{ref}.clc.vcf"
     output: snpcall_dir + "/clc/{sample}.{ref}.clc.vcf"
     shell:
         """
@@ -91,20 +91,41 @@ rule cp_clc:
 # Build the BWA and fai index for reference
 include: "rules/index.smk"
 
-# Remove remaining Phix reads
-include: "rules/rm_phix.smk"
+# If not run on reads, copy the resulting VCF provided within the software for benchmarking
+if not run_on_reads:
+    rule cp_vcf:
+        input: cd + \
+            "/data/snp/vcf/{snpcallers}/{sample}.{ref}.{snpcallers}.vcf"
+        output: snpcall_dir + "/{snpcallers}/{sample}.{ref}.{snpcallers}.vcf"
+        shell:
+            """
+            cp {input} {output}
+            """
 
-# BWA alignment
-include: "rules/bwa.smk"
+    rule cp_genome_diff:
+        input: cd + "/data/snp/nucmer/{mix}.maskrepeat.snps"
+        output: snp_dir + "/nucmer/{mix}.maskrepeat.snps"
+        shell:
+            """
+            cp {input} {output}
+            """
 
-# Remove duplicate from BAM file using picard
-include: "rules/rmdup.smk"
+else:
 
-# Perform SNP calling
-include: "rules/snpcall.smk"
+    # Remove remaining Phix reads
+    include: "rules/rm_phix.smk"
 
-# Compare genome differences using NUCmer
-include: "rules/nucmmer.smk"
+    # BWA alignment
+    include: "rules/bwa.smk"
+
+    # Remove duplicate from BAM file using picard
+    include: "rules/rmdup.smk"
+
+    # Perform SNP calling
+    include: "rules/snpcall.smk"
+
+    # Compare genome differences using NUCmer
+    include: "rules/nucmmer.smk"
 
 # Extract the TP, FP SNPs
 include: "rules/extract_TP.smk"

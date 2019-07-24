@@ -57,7 +57,6 @@ for (file in fp_vcf){
 combined_plots <- list()
 n_panel <- 0
 for (mix in samples){
-    print(mix)
     n_panel <- n_panel + 1
     futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
     # Venndiagram

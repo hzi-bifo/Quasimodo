@@ -1,0 +1,45 @@
+##fileformat=VCFv4.2
+##FILTER=<ID=PASS,Description="All filters passed">
+##bcftoolsVersion=1.9+htslib-1.9
+##bcftoolsCommand=mpileup -Ou -f /net/sgi/viral_genomics/MHH/cmv_mixed_strain/HCMV_benchmark/ref/Merlin.BAC.fa ../HCMV_benchmark_output/data/seqs/bam/TM-1-10.Merlin.rmdup.bam
+##reference=file:///net/sgi/viral_genomics/MHH/cmv_mixed_strain/HCMV_benchmark/ref/Merlin.BAC.fa
+##contig=<ID=Merlin_1555,length=245038>
+##ALT=<ID=*,Description="Represents allele(s) other than observed.">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=IDV,Number=1,Type=Integer,Description="Maximum number of reads supporting an indel">
+##INFO=<ID=IMF,Number=1,Type=Float,Description="Maximum fraction of reads supporting an indel">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw read depth">
+##INFO=<ID=VDB,Number=1,Type=Float,Description="Variant Distance Bias for filtering splice-site artefacts in RNA-seq data (bigger is better)",Version="3">
+##INFO=<ID=RPB,Number=1,Type=Float,Description="Mann-Whitney U test of Read Position Bias (bigger is better)">
+##INFO=<ID=MQB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality Bias (bigger is better)">
+##INFO=<ID=BQB,Number=1,Type=Float,Description="Mann-Whitney U test of Base Quality Bias (bigger is better)">
+##INFO=<ID=MQSB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality vs Strand Bias (bigger is better)">
+##INFO=<ID=SGB,Number=1,Type=Float,Description="Segregation based metric.">
+##INFO=<ID=MQ0F,Number=1,Type=Float,Description="Fraction of MQ0 reads (smaller is better)">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=ICB,Number=1,Type=Float,Description="Inbreeding Coefficient Binomial test (bigger is better)">
+##INFO=<ID=HOB,Number=1,Type=Float,Description="Bias in the number of HOMs number (smaller is better)">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Average mapping quality">
+##bcftools_callVersion=1.9+htslib-1.9
+##bcftools_callCommand=call -p 0.01 --ploidy 1 -mv -Ob; Date=Mon Jun 17 02:29:02 2019
+##bcftools_viewVersion=1.9+htslib-1.9
+##bcftools_viewCommand=view -i %QUAL>=20 -; Date=Mon Jun 17 02:51:37 2019
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	../HCMV_benchmark_output/data/seqs/bam/TM-1-10.Merlin.rmdup.bam
+Merlin_1555	798	.	T	G	40.4094	.	DP=250;VDB=1.68708e-12;SGB=-0.693147;RPB=2.09681e-24;MQB=1.57218e-21;MQSB=0.000174995;BQB=0.45131;MQ0F=0.552;AC=1;AN=1;DP4=104,55,53,3;MQ=15	GT:PL	1:109,41
+Merlin_1555	805	.	G	T	53	.	DP=248;VDB=9.72577e-11;SGB=-0.693147;RPB=2.48951e-27;MQB=6.83784e-24;MQSB=2.8185e-05;BQB=0.552609;MQ0F=0.564516;AC=1;AN=1;DP4=99,58,63,3;MQ=16	GT:PL	1:148,68
+Merlin_1555	834	.	A	G	72	.	DP=250;VDB=3.10663e-05;SGB=-0.693147;RPB=1.55168e-20;MQB=6.82433e-26;MQSB=1.8455e-08;BQB=0.0562864;MQ0F=0.38;AC=1;AN=1;DP4=70,49,86,6;MQ=24	GT:PL	1:255,156
+Merlin_1555	857	.	G	C	37.8275	.	DP=238;VDB=8.17383e-15;SGB=-0.693147;RPB=4.99975e-15;MQB=3.52684e-23;MQSB=3.4503e-11;BQB=0.010844;MQ0F=0.239496;AC=1;AN=1;DP4=52,37,104,5;MQ=33	GT:PL	1:255,190
+Merlin_1555	897	.	T	C	103	.	DP=253;VDB=2.24542e-12;SGB=-0.693147;RPB=0.0152231;MQB=2.4548e-07;MQSB=0.250358;BQB=0.0557383;MQ0F=0.027668;AC=1;AN=1;DP4=48,8,140,23;MQ=43	GT:PL	1:255,125
+Merlin_1555	910	.	C	G	104	.	DP=262;VDB=1.29181e-16;SGB=-0.693147;RPB=2.0484e-05;MQB=3.17579e-09;MQSB=0.25576;BQB=0.715865;MQ0F=0.0534351;AC=1;AN=1;DP4=57,7,139,30;MQ=41	GT:PL	1:255,124
+Merlin_1555	924	.	A	G	114	.	DP=271;VDB=1.96172e-20;SGB=-0.693147;RPB=1.28338e-14;MQB=2.25772e-11;MQSB=0.384985;BQB=0.331376;MQ0F=0.0774908;AC=1;AN=1;DP4=63,6,139,32;MQ=40	GT:PL	1:255,114
+Merlin_1555	954	.	T	G	82	.	DP=279;VDB=1.03714e-25;SGB=-0.693147;RPB=1.89091e-16;MQB=1.00605e-11;MQSB=0.739968;BQB=0.00289519;MQ0F=0.0860215;AC=1;AN=1;DP4=72,6,137,28;MQ=40	GT:PL	1:255,146
+Merlin_1555	983	.	C	T	37.5913	.	DP=282;VDB=4.34662e-34;SGB=-0.693147;RPB=6.30796e-22;MQB=4.37859e-13;MQSB=0.988113;BQB=0.131342;MQ0F=0.120567;AC=1;AN=1;DP4=96,4,112,31;MQ=38	GT:PL	1:255,190
+Merlin_1555	984	.	G	A	39.6056	.	DP=281;VDB=1.27193e-34;SGB=-0.693147;RPB=3.87469e-23;MQB=3.81181e-14;MQSB=0.825436;BQB=0.431699;MQ0F=0.120996;AC=1;AN=1;DP4=95,4,115,28;MQ=38	GT:PL	1:255,188
+Merlin_1555	171466	.	C	T	225	.	DP=254;VDB=0.11227;SGB=-0.693147;MQSB=1;MQ0F=0;AC=1;AN=1;DP4=0,0,202,36;MQ=60	GT:PL	1:255,0
+Merlin_1555	177925	.	T	G	228	.	DP=257;VDB=0.0490167;SGB=-0.693147;RPB=1;MQB=1;MQSB=0.999921;BQB=1;MQ0F=0;AC=1;AN=1;DP4=1,0,236,3;MQ=59	GT:PL	1:255,0
+Merlin_1555	177926	.	G	T	225	.	DP=258;VDB=0.131617;SGB=-0.693147;MQSB=0.999923;MQ0F=0;AC=1;AN=1;DP4=0,0,240,3;MQ=59	GT:PL	1:255,0
+Merlin_1555	232456	.	T	A	27.4222	.	DP=2;SGB=-0.379885;MQ0F=0;AC=1;AN=1;DP4=0,0,1,0;MQ=60	GT:PL	1:57,0

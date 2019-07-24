@@ -4,9 +4,9 @@ rule mutationcontext:
                                 sample_ref=[sample for sample in sample_ref if sample.startswith(
                                     wc.mix) and not "-1-0" in sample],
                                 snpcaller=selected_snpcaller),
-        tp = lambda wc: expand(snpcall_dir + "/{snpcaller}/tp/{sample_ref}.{snpcaller}.tp.vcf",
-                               snpcaller=selected_snpcaller,
-                               sample_ref=[sample for sample in sample_ref_tp if sample.startswith(wc.mix)]),
+        # tp = lambda wc: expand(snpcall_dir + "/{snpcaller}/tp/{sample_ref}.{snpcaller}.tp.vcf",
+        #                       snpcaller=selected_snpcaller,
+        #                       sample_ref=[sample for sample in sample_ref_tp if sample.startswith(wc.mix)]),
         fp = lambda wc: expand(snpcall_dir + "/{snpcaller}/fp/{sample_ref}.{snpcaller}.fp.vcf",
                                snpcaller=selected_snpcaller,
                                sample_ref=[sample for sample in sample_ref_tp if sample.startswith(wc.mix)])

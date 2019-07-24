@@ -100,12 +100,9 @@ for(vcf in vcf_list){
     pathname <- dirname(vcf)
     basename <- basename(vcf)
     snpcaller_ref_sample <- unlist(strsplit(basename, "\\."))
-    #print(snpcaller_ref_sample)
     sample <- snpcaller_ref_sample[1]
     ref_name <- snpcaller_ref_sample[2]
     snpcaller <- snpcaller_ref_sample[3]
-    #print(ref_fh)
-    #print(paste(sample, "(TP)", sep=" "))
     study <- ifelse(endsWith(sample, "-0-1"), paste("unmixed", sample, sep=" "), sample)
     mc <- vcfMutationContext(vcf, ref_name, ref_fh, study)#sample)
 
