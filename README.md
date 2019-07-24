@@ -43,6 +43,7 @@ AD169Ref: ref/AD169.BAC.fa # path to AD169 genome
 PhixRef: ref/Phix.fa # path to Phix genome
 projectPath: <your project path> # path to the project aka the directory for outputs
 threads: 2 # number of cores to use
+runOnReads: false
 ```
 
 - Provide the sample list `config/sample_list.tsv`. The list is a tab delimited text file, and echo row is one sample.
@@ -69,8 +70,15 @@ Please use -c parameter to specify the desired path to create the `conda` ENVs. 
 
 The parameters for `run_benchmark.py`:
 ```shell
-usage: run_benchmark.py [-h] [-d] [-t THREADS] [-c CONDA_PREFIX]
+usage: run_benchmark.py [-h] [-d] [-t THREADS] [-s] [-c CONDA_PREFIX]
                         {all,snpcall,assembly}
+
+    run_benchmark.py --- run the benchmarking for assembly and SNPs calling
+
+    Usage:
+    python run_benchmark.py [-d] [-t threads] <all|snpcall|assembly>
+
+
 
 positional arguments:
   {all,snpcall,assembly}
@@ -78,12 +86,17 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -d, --dryrun          Print the output details without run the pipeline
+  -d, --dryrun          Print the details without run the pipeline
   -t THREADS, --threads THREADS
                         The number of threads to use, default: 2
+  -s, --slow            Run the evaluation based on reads, which is very slow.
+                            By default, the evaluation will be based on the VCF and contig
+                            files provided within this software. If this parameter is on,
+                            this software will run all the analyses to generate outputs
+                            based on reads for benchmarking which is very time consuming.
   -c CONDA_PREFIX, --conda_prefix CONDA_PREFIX
-                        The prefix of conda ENV which tells the program where to create the conda ENV 
-                        (default: in the working directory)
+                        The prefix of conda ENV 
+                        [default: in the working directory]
 ```
 
 #### Test variant callers and analyze the mutation context of identified variants
@@ -95,4 +108,64 @@ python3 run_benchmark.py -t 10 snpcall -c ~/miniconda3/envs
 #### All in one:
 ```shell
 python run_benchmarking.py -t 10 all -c ~/miniconda3/envs
+```
+
+### The output structure
+
+```
+└── results
+    ├── asssembly
+    │   ├── abyss
+    │   ├── idba
+    │   ├── megahit
+    │   ├── metaspades
+    │   ├── ray
+    │   ├── savage
+    │   ├── spades
+    │   └── tadpole
+    ├── final_figures
+    ├── final_tables
+    ├── metaquast
+    │   ├── summary_for_figure
+    │   ├── TA
+    │   └── TM
+    └── snp
+        ├── callers
+        └── nucmer
+```
+
+#### For full run based on reads (-s option on)
+```
+├── data
+│   └── seqs
+│       ├── bam
+│       ├── cl_bam
+│       ├── cl_fq
+│       ├── pear_merge
+│       ├── pileup
+│       └── reads
+├── reports
+│   ├── benchmarks
+│   ├── bwa
+│   └── picard
+└── results
+    ├── asssembly
+    │   ├── abyss
+    │   ├── idba
+    │   ├── megahit
+    │   ├── metaspades
+    │   ├── ray
+    │   ├── savage
+    │   ├── spades
+    │   └── tadpole
+    ├── final_figures
+    │   └── refined
+    ├── final_tables
+    ├── metaquast
+    │   ├── summary_for_figure
+    │   ├── TA
+    │   └── TM
+    └── snp
+        ├── callers
+        └── nucmer
 ```

@@ -97,7 +97,7 @@ if __name__ == "__main__":
                         "--conda_prefix",
                         type=str,
                         default=None,
-                        help="The prefix of conda ENV")
+                        help="The prefix of conda ENV [default: in the working directory]")
     args = parser.parse_args()
     snpcall_smk = os.path.join(wd, "evaluate_snpcall.smk")
     assembly_smk = os.path.join(wd, "evaluate_assembly.smk")
