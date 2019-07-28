@@ -22,7 +22,7 @@ run_on_reads = config["runOnReads"]
 
 cd = os.path.dirname(os.path.abspath(__name__))
 # Define the folder to put the outputs
-project_dir = config["projectPath"].rstrip("/")
+project_dir = config["outpath"].rstrip("/")
 
 # Reports, QC sequences, results, assemblies, metaquast dir
 report_dir = "/".join([project_dir, "reports"])

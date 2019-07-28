@@ -1,5 +1,5 @@
-vcfs:
+vcfs: ../HCMV_benchmark_output/results/snp/callers/lofreq/TA-1-1.AD169.lofreq.vcf,../HCMV_benchmark_output/results/snp/callers/varscan/TA-1-1.AD169.varscan.vcf,../HCMV_benchmark_output/results/snp/callers/bcftools/TA-1-1.AD169.bcftools.vcf
 scaffolds:
 refs:
-projectDir:
-threads:
+outpath: ../HCMV_bench_custom_out/
+threads: 2

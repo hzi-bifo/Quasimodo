@@ -3,7 +3,7 @@ import os
 configfile: "config/customize_data.yaml"
 
 refs = list(map(str.strip, config["refs"].split(",")))
-project_dir = config["projectDir"].rstrip("/")
+project_dir = config["outpath"].rstrip("/")
 threads = config["threads"]
 results_dir = project_dir + "/results"
 

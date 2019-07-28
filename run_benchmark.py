@@ -2,21 +2,131 @@
 # -- coding: utf-8 --
 import os
 import sys
-import argparse
-from argparse import RawTextHelpFormatter
+import click
+import functools
 import snakemake
 
 wd = os.path.dirname(os.path.realpath(__file__))
 
 
-def start_evaluation(snake, slow=False, dryrun=False, threads=2, conda_prefix=None):
+@click.group()
+def cli():
+    pass
+
+
+def common_options(f):
+    options = [click.option("-d",
+                            "--dryrun",
+                            is_flag=True,
+                            default=False,
+                            help="Print the details without run the pipeline"
+                            ),
+               click.option("-t",
+                            "--threads",
+                            type=int,
+                            default=2,
+                            help="The number of threads to use, default: 2"),
+
+               click.option("-c",
+                            "--conda_prefix",
+                            type=click.Path(exists=True),
+                            default=None,
+                            help="The prefix of conda ENV [default: in the working directory]"),
+               click.option("-o",
+                            "--outpath",
+                            type=click.Path(),
+                            default=None,
+                            help="The directory where to put the results and figures")
+               ]
+
+    return functools.reduce(lambda x, opt: opt(x), options, f)
+
+
+@cli.command()
+@common_options
+@click.option("-e",
+              "--evaluation",
+              required=True,
+              type=click.Choice(["all", "snpcall", "assembly"]),
+              help="The evaluation to run.")
+@click.option("-s",
+              "--slow",
+              is_flag=True,
+              default=False,
+              help="Run the evaluation based on reads, which is very slow. \
+By default, the evaluation will be based on the VCF and contig \
+files provided within this software. If this parameter is on, \
+this software will run all the analyses to generate outputs \
+based on reads for benchmarking which is very time consuming.")
+def hcmv(evaluation, dryrun=False, conda_prefix=None, slow=False, **kwargs):
+    snpcall_smk = os.path.join(wd, "evaluate_snpcall.smk")
+    assembly_smk = os.path.join(wd, "evaluate_assembly.smk")
+    snake_kwargs = dict(runOnReads=slow)
+    for arg, val in kwargs.items():
+        if val != None:
+            snake_kwargs[arg] = val
+    if evaluation == "snpcall":
+        snakes = [snpcall_smk]
+    elif evaluation == "assembly":
+        snakes = [assembly_smk]
+    else:
+        snakes = [snpcall_smk, assembly_smk]
+    for snake in snakes:
+        run_snake(snake, dryrun, conda_prefix, **snake_kwargs)
+
+
+@cli.command()
+@common_options
+@click.option("-v",
+              "--vcfs",
+              type=str,
+              help="Comma-separated list of VCF files. Please quote the whole \
+parameter if there is any white space the file names")
+@click.option("-r",
+              "--refs",
+              type=str,
+              help="Comma-separated list of reference genome files. Please \
+quote the whole parameter if there is any white space the file names")
+def snpeval(dryrun=False, conda_prefix=None, **kwargs):
+    snpcall_smk = os.path.join(wd, "evaluate_snpcall_customize.smk")
+    snake_kwargs = {}
+    for arg, val in kwargs.items():
+        if val != None:
+            snake_kwargs[arg] = val
+    run_snake(snpcall_smk, dryrun, conda_prefix, **snake_kwargs)
+
+
+@cli.command()
+@common_options
+@click.option("-s",
+              "--scaffolds",
+              type=str,
+              help="Comma-separated list of scaffold files. Please quote the \
+whole parameter if there is any white space the file names")
+@click.option("-r",
+              "--refs",
+              type=str,
+              help="Comma-separated list of reference genome files. Please \
+quote the whole parameter if there is any white space the file names")
+def asmeval(dryrun=False, threads=2, conda_prefix=None, **kwargs):
+    #snpcall_smk = os.path.join(wd, "evaluate_snpcall_customize.smk")
+    assembly_smk = os.path.join(wd, "evaluate_assembly_customize.smk")
+    snake_kwargs = {}
+    for arg, val in kwargs.items():
+        if val != None:
+            snake_kwargs[arg] = val
+    run_snake(assembly_smk, dryrun, conda_prefix, **snake_kwargs)
+
+
+def run_snake(snake, dryrun=False, conda_prefix=None, **kwargs):
     try:
         # Unlock the working directory
         unlocked = snakemake.snakemake(
             snakefile=snake,
             # unlock=False,
             unlock=True,
-            workdir=wd
+            workdir=wd,
+            config=kwargs
         )
         if not unlocked:
             raise Exception('Could not unlock the working directory!')
@@ -25,15 +135,14 @@ def start_evaluation(snake, slow=False, dryrun=False, threads=2, conda_prefix=No
         success = snakemake.snakemake(
             snakefile=snake,
             restart_times=3,
-            cores=threads,
-            config={"threads": threads},
+            cores=kwargs.get("threads", 2),
             workdir=wd,
             use_conda=True,
             conda_prefix=conda_prefix,
             dryrun=dryrun,
-            #            summary=True,
             printshellcmds=True,
-            force_incomplete=True
+            force_incomplete=True,
+            config=kwargs,
         )
         if not success:
             raise Exception('Snakemake pipeline failed!')
@@ -50,65 +159,9 @@ def start_evaluation(snake, slow=False, dryrun=False, threads=2, conda_prefix=No
         print('{}\t{}\n'.format(
             datetime.now().isoformat(' ', timespec='minutes'),
             sys.exc_info()))
-        raise RuntimeError('Unknown problem occured when lauching Snakemake!')
+        raise RuntimeError(
+            'Unknown problem occured when lauching Snakemake!')
 
 
 if __name__ == "__main__":
-    usage = r'''
-    run_benchmark.py --- run the benchmarking for assembly and SNPs calling
-
-
-    Usage:
-    python run_benchmark.py [-d] [-t threads] <all|snpcall|assembly>
-
-    '''
-
-    parser = argparse.ArgumentParser(description=usage,
-                                     formatter_class=RawTextHelpFormatter,
-                                     epilog="   by ZL Deng")
-
-    parser.add_argument("evaluation",
-                        type=str,
-                        choices=["all", "snpcall", "assembly"],
-                        help="the evaluation to run")
-    parser.add_argument("-d",
-                        "--dryrun",
-                        dest="dryrun",
-                        default=False,
-                        action="store_true",
-                        help="Print the details without run the pipeline")
-
-    parser.add_argument("-t",
-                        "--threads",
-                        type=int,
-                        default=2,
-                        help="The number of threads to use, default: 2")
-    parser.add_argument("-s",
-                        "--slow",
-                        dest="slow",
-                        default=False,
-                        action="store_true",
-                        help="""Run the evaluation based on reads, which is very slow.
-    By default, the evaluation will be based on the VCF and contig 
-    files provided within this software. If this parameter is on, 
-    this software will run all the analyses to generate outputs 
-    based on reads for benchmarking which is very time consuming.""")
-    parser.add_argument("-c",
-                        "--conda_prefix",
-                        type=str,
-                        default=None,
-                        help="The prefix of conda ENV [default: in the working directory]")
-    args = parser.parse_args()
-    snpcall_smk = os.path.join(wd, "evaluate_snpcall.smk")
-    assembly_smk = os.path.join(wd, "evaluate_assembly.smk")
-    if args.evaluation == "snpcall":
-        start_evaluation(snpcall_smk, args.slow, args.dryrun,
-                         args.threads, args.conda_prefix)
-    elif args.evaluation == "assembly":
-        start_evaluation(assembly_smk, args.slow, args.dryrun,
-                         args.threads, args.conda_prefix)
-    else:
-        start_evaluation(snpcall_smk, args.slow, args.dryrun,
-                         args.threads, args.conda_prefix)
-        start_evaluation(assembly_smk, args.slow, args.dryrun,
-                         args.threads, args.conda_prefix)
+    cli()
