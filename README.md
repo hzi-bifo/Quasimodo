@@ -68,7 +68,7 @@ runOnReads: false # Run the whole analyses on reads. Controlled by the `--slow` 
 **All evaluation can be launched with `run_benchmark.py`**
 
 The parameters for `run_benchmark.py`:
-```shell
+```
 Usage: run_benchmark.py [OPTIONS] COMMAND [ARGS]...
 
 Options:
@@ -84,7 +84,7 @@ Commands:
 This program consists of three subcommands: `hcmv`, `snpeval`, `asmeval`. The first one is used for the benchmarking on our HCMV datasets. And the other two are for the SNP call and assembly evaluation on customized datasets.
 
 The argumentrs and options in the `hcmv` command:
-```shell
+```
 Usage: run_benchmark.py hcmv [OPTIONS]
 
   Benchmarking for HCMV dataset
@@ -199,7 +199,7 @@ python run_benchmarking.py hcmv -e all -t 10 -c ~/miniconda3/envs
 #### Evaluate the assembly or haplotype reconstruction
 
 The arguments and options of `asmeval` command:
-```shell
+```
 Usage: run_benchmark.py asmeval [OPTIONS]
 
   Assembly benchmark for customized dataset
@@ -236,7 +236,7 @@ python3 run_benchmark.py asmeval -t 10 -c ~/miniconda3/envs \
 
 #### Assess variant callers
 The arguments and options of `snpeval` command:
-```shell
+```
 Usage: run_benchmark.py snpeval [OPTIONS]
 
   SNP calling benchmark for customized dataset
