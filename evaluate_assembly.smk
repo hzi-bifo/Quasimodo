@@ -26,7 +26,7 @@ onsuccess:
 rule all:
     input:
         expand("{assemblyDir}/{assembler}/{sample}.{assembler}.scaffolds.fa",
-               assemblyDir=assembly_dir, sample=list(samples["sample"]), assembler=assemblers),
+               assemblyDir=assembly_dir, sample=sample_list, assembler=assemblers),
         expand("{metaquastDir}/{strain_sample}/report.html", metaquastDir=metaquast_dir,
                assembler=assemblers, strain_sample=make_mix()),
         expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}.merged.tsv",

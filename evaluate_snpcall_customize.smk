@@ -1,13 +1,11 @@
-import os
+include: "rules/load_config_custom.smk"
 
-configfile: "config/customize_data.yaml"
+try:
+    vcfs = list(map(str.strip, config["vcfs"].split(",")))
+except AttributeError as e:
+    raise PathNotGiven(
+        "The VCF files from SNP calling are not specified.")
 
-refs = list(map(str.strip, config["refs"].split(",")))
-project_dir = config["outpath"].rstrip("/")
-threads = config["threads"]
-results_dir = project_dir + "/results"
-
-vcfs = list(map(str.strip, config["vcfs"].split(",")))
 snp_dir = results_dir + "/snp"
 snpcall_dir = snp_dir + "/callers"
 g1_name, g2_name = (os.path.splitext(os.path.basename(ref))[0] for ref in refs)

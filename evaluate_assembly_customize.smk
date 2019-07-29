@@ -1,13 +1,10 @@
-import os
+include: "rules/load_config_custom.smk"
+try:
+    scaffolds = list(map(str.strip, config["scaffolds"].split(",")))
+except AttributeError as e:
+    raise PathNotGiven(
+        "The scaffold files from assembly are not specified.")
 
-configfile: "config/customize_data.yaml"
-
-refs = list(map(str.strip, config["refs"].split(",")))
-project_dir = config["outpath"].rstrip("/")
-threads = config["threads"]
-results_dir = project_dir + "/results"
-
-scaffolds = list(map(str.strip, config["scaffolds"].split(",")))
 metaquast_dir = results_dir + "/metaquast"
 metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction",
                       "Duplication_ratio", "Largest_alignment", "LGA50",
