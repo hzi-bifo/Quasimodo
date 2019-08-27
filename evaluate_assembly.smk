@@ -3,8 +3,8 @@ include: "rules/load_config.smk"
 
 assembly_dir = "/".join([project_dir, "results/asssembly"])
 metaquast_dir = "/".join([project_dir, "results/metaquast"])
-assemblers = ["spades", "metaspades", "tadpole",  # "haploflow",
-              "megahit", "ray", "idba", "abyss", "savage"]
+assemblers = ["spades", "metaspades", "tadpole", "abyss", 
+              "megahit", "ray", "idba", "savage"]  # "haploflow",
 metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction",
                       "Duplication_ratio", "Largest_alignment", "LGA50",
                       "NGA50", "num_misassemblies", "num_mismatches_per_100_kbp"]
@@ -31,8 +31,9 @@ rule all:
                assembler=assemblers, strain_sample=make_mix()),
         expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}.merged.tsv",
                mix=["TM", "TA"], criteria=metaquast_criteria),
-        expand(results_dir + "/final_figures/assembly_metaquast_evaluation.pdf"),
-        expand(results_dir + "/final_tables/assembly_metaquast_ranking.tsv")
+        results_dir + "/final_figures/assembly_metaquast_evaluation.pdf",
+        results_dir + "/final_tables/assembly_metaquast_ranking.tsv",
+        results_dir + "/final_tables/assembly_metaquast_score.tsv"
 
 
 # Build index for reference
@@ -188,7 +189,8 @@ rule visualize:
                mix=["TA", "TM"], criteria=metaquast_criteria)
     output:
         figure = results_dir + "/final_figures/assembly_metaquast_evaluation.pdf",
-        table = results_dir + "/final_tables/assembly_metaquast_ranking.tsv"
+        table = results_dir + "/final_tables/assembly_metaquast_ranking.tsv",
+        score = results_dir + "/final_tables/assembly_metaquast_score.tsv"
     conda:
         "config/conda_env.yaml"
     params:

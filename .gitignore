@@ -3,3 +3,7 @@ modify_savage.done
 Rplots.pdf
 *.log
 data/assembly/*
+Ray*
+*.nohup
+*utect2.smk
+*.dict

@@ -5,30 +5,49 @@ library(cowplot)
 input_dir <- snakemake@params$input_dir
 output_figure <- snakemake@output$figure
 output_table <- snakemake@output$table
-
-
-## Read the metaquast summary for TM mixture
-read_metaquast_tm <- function(file_name, dir = input_dir) {
+output_score <- snakemake@output$score
+read_metaquast <- function(file_name, dir = input_dir) {
   file <- paste(dir, file_name, sep = "/")
-  TM.metaquast <- read.table(file, sep = "\t", header = T, na.strings = "-", check.names = F) %>%
+
+  metaquast <- read.table(file, sep = "\t", header = T, na.strings = "-", check.names = F) %>%
     separate(Assemblies, c("sample", "assembler"), sep = "\\.") 
-  TM.metaquast$`TB40E` <- ifelse(TM.metaquast$sample == "TM_0_1", NA, TM.metaquast$`TB40E`)
-  TM.metaquast$Merlin <- ifelse(TM.metaquast$sample == "TM_1_0", NA, TM.metaquast$Merlin)
-  TM.metaquast$not_aligned <- NULL
-  return(TM.metaquast)
+  ref1 <- 3
+  ref2 <- 4
+  if (grepl("NGA50", file_name)){
+      metaquast[,ref1] <- ifelse(endsWith(metaquast$sample, "_0_1"), -1, metaquast[,ref1])
+      metaquast[,ref2] <- ifelse(endsWith(metaquast$sample, "_1_0"), -1, metaquast[,ref2])
+      metaquast[is.na(metaquast)] <- 0
+      metaquast[metaquast==-1] = NA
+  }
+  else{
+      metaquast[,ref1] <- ifelse(endsWith(metaquast$sample, "_0_1"), NA, metaquast[,ref1])
+      metaquast[,ref2] <- ifelse(endsWith(metaquast$sample, "_1_0"), NA, metaquast[,ref2])
+  }
+  metaquast$not_aligned <- NULL
+  metaquast$assembler <- ifelse(metaquast$assembler=="metaspades", "metaspa", metaquast$assembler)
+  return(metaquast)
 }
 
-## Read the metaquast summary for TM mixture
-read_metaquast_ta <- function(file_name, dir = input_dir) {
-  file <- paste(dir, file_name, sep = "/")
-  TA.metaquast <- read.table(file, sep = "\t", header = T, na.strings = "-", check.names = F) %>%
-    separate(Assemblies, c("sample", "assembler"), sep = "\\.") 
-  TA.metaquast$`TB40E` <- ifelse(TA.metaquast$sample == "TA_0_1", NA, TA.metaquast$`TB40E`)
-  TA.metaquast$AD169 <- ifelse(TA.metaquast$sample == "TA_1_0", NA, TA.metaquast$AD169)
-  TA.metaquast$not_aligned <- NULL
-  return(TA.metaquast)
+metaquast_criteria <- c(
+  "num_contigs", "Genome_fraction",
+  "Duplication_ratio", "Largest_alignment", 
+  "NGA50", "num_misassemblies", "num_mismatches_per_100_kbp"
+)
+
+files <- list.files(input_dir, pattern = "\\.merged\\.tsv$")
+metaquast_list = list()
+for (file in files){
+    mix_criteria = gsub("\\.merged\\.tsv$", "", file)
+    criteria = unlist(strsplit(mix_criteria, "\\."))[2]
+    if (criteria %in% metaquast_criteria){
+        df = read_metaquast(file)
+        df$criteria = criteria
+        df.long <- gather(df, reference, value, -c(sample, assembler, criteria))
+        metaquast_list[[mix_criteria]] = df.long
+    }
 }
 
+metaquast_all_criteria <- do.call(rbind, metaquast_list)
 
 ## Nicer theme with and without legend
 theme_with_legend <- function(){
@@ -82,238 +101,149 @@ color_dot_boxplot <- function(df, value, label) {
     ) + xlab("") + 
     theme_bw(base_size = 15) +
     ylab(label) + 
-    scale_color_brewer(palette = "Set1")
+    scale_color_brewer(palette = "Set1") 
   return(g)
 }
 
-
-
-## The visualized criteria
-metaquast_criteria <- c(
-  "num_contigs", "Largest_contig", "Genome_fraction",
-  "Duplication_ratio", "Largest_alignment", "LGA50",
-  "NGA50", "num_misassemblies", "num_mismatches_per_100_kbp"
-)
-
-
-
-## Genome fraction for TM and TA
-TM.GenomeFraction <- read_metaquast_tm("TM.Genome_fraction.merged.tsv")
-TM.GenomeFraction.long <- gather(TM.GenomeFraction, reference, fraction, -c(sample, assembler))
-TA.GenomeFraction <- read_metaquast_ta("TA.Genome_fraction.merged.tsv")
-TA.GenomeFraction.long <- gather(TA.GenomeFraction, reference, fraction, -c(sample, assembler))
-
-## Duplicate ratio for TM and TA
-TM.DuplicationRatio <- read_metaquast_tm("TM.Duplication_ratio.merged.tsv")
-TM.DuplicationRatio.long <- gather(TM.DuplicationRatio, reference, DuplicationRatio, -c(sample, assembler))
-TA.DuplicationRatio <- read_metaquast_ta("TA.Duplication_ratio.merged.tsv")
-TA.DuplicationRatio.long <- gather(TA.DuplicationRatio, reference, DuplicationRatio, -c(sample, assembler))
-
-## Largest alignment for TM and TA
-TM.Largest_alignment <- read_metaquast_tm("TM.Largest_alignment.merged.tsv")
-TM.Largest_alignment.long <- gather(TM.Largest_alignment, reference, LargestAlignment, -c(sample, assembler))
-TA.Largest_alignment <- read_metaquast_ta("TA.Largest_alignment.merged.tsv")
-TA.Largest_alignment.long <- gather(TA.Largest_alignment, reference, LargestAlignment, -c(sample, assembler))
-
-
-## Largest contig for TM and TA
-TM.Largest_contig <- read_metaquast_tm("TM.Largest_contig.merged.tsv")
-TM.Largest_contig.long <- gather(TM.Largest_contig, reference, LargestContig, -c(sample, assembler))
-TA.Largest_contig <- read_metaquast_ta("TA.Largest_contig.merged.tsv")
-TA.Largest_contig.long <- gather(TA.Largest_contig, reference, LargestContig, -c(sample, assembler))
-
-
-## Genome aligned L50 for TM and TA
-TM.LGA50 <- read_metaquast_tm("TM.LGA50.merged.tsv")
-TM.LGA50.long <- gather(TM.LGA50, reference, LGA50, -c(sample, assembler))
-TA.LGA50 <- read_metaquast_ta("TA.LGA50.merged.tsv")
-TA.LGA50.long <- gather(TA.LGA50, reference, LGA50, -c(sample, assembler))
-
-## Genome aligned N50 for TM and TA
-TM.NGA50 <- read_metaquast_tm("TM.NGA50.merged.tsv")
-TM.NGA50.long <- gather(TM.NGA50, reference, NGA50, -c(sample, assembler))
-TA.NGA50 <- read_metaquast_ta("TA.NGA50.merged.tsv")
-TA.NGA50.long <- gather(TA.NGA50, reference, NGA50, -c(sample, assembler))
-
-
-## Number of contigs for TM and TA
-TM.contigs <- read_metaquast_tm("TM.num_contigs.merged.tsv")
-TM.contigs.long <- gather(TM.contigs, reference, contigs, -c(sample, assembler))
-TA.contigs <- read_metaquast_ta("TA.num_contigs.merged.tsv")
-TA.contigs.long <- gather(TA.contigs, reference, contigs, -c(sample, assembler))
-
-## Number of misassemblies for TM and TA
-TM.misassemblies <- read_metaquast_tm("TM.num_misassemblies.merged.tsv")
-TM.misassemblies.long <- gather(TM.misassemblies, reference, misassemblies, -c(sample, assembler))
-TA.misassemblies <- read_metaquast_ta("TA.num_misassemblies.merged.tsv")
-TA.misassemblies.long <- gather(TA.misassemblies, reference, misassemblies, -c(sample, assembler))
-
-## Number of mismatches per 100 kbp for TM and TA
-TM.num_mismatches_per_100_kbp <- read_metaquast_tm("TM.num_mismatches_per_100_kbp.merged.tsv")
-TM.num_mismatches_per_100_kbp.long <- gather(
-  TM.num_mismatches_per_100_kbp, reference, mismatches,
-  -c(sample, assembler)
-)
-TA.num_mismatches_per_100_kbp <- read_metaquast_ta("TA.num_mismatches_per_100_kbp.merged.tsv")
-TA.num_mismatches_per_100_kbp.long <- gather(
-  TA.num_mismatches_per_100_kbp, reference, mismatches,
-  -c(sample, assembler)
-)
-
-## Genome fraction visualization
-p_gf_box <- color_dot_boxplot(rbind(TM.GenomeFraction.long, 
-                                    TA.GenomeFraction.long), 
-                  "fraction", 
-                  "% Genome fraction") +
-  theme_wo_legend()
-  
-
-
-
-## Duplication ratio visualization
-p_dr_box <- color_dot_boxplot(rbind(TM.DuplicationRatio.long, 
-                                    TA.DuplicationRatio.long), 
-                  "DuplicationRatio", 
-                  "Duplication Ratio") +
-  theme_wo_legend()
-
-
-## Largest alignment visualization
-p_la_box <- color_dot_boxplot(rbind(TM.Largest_alignment.long, 
-                        TA.Largest_alignment.long), 
-                  "LargestAlignment / 1000", 
-                  "Largest Alignment (kb)") +
-  theme_wo_legend()
-
-
-## Largest contig visualization
-p_lc_box <- color_dot_boxplot(rbind(TM.Largest_contig.long, 
-                        TA.Largest_contig.long), 
-                  "LargestContig / 1000", 
-                  "Largest Contig (kb)") +
-  theme_wo_legend()
-
-## LGA50 visualization
-p_lga50_box <- color_dot_boxplot(rbind(TM.LGA50.long, 
-                        TA.LGA50.long), 
-                  "LGA50", 
-                  "LGA50") +
-  theme_wo_legend()
-
-## NGA50 visualization
-p_nga50_box <- color_dot_boxplot(rbind(TM.NGA50.long, 
-                        TA.NGA50.long), 
-                  "NGA50 / 1000", 
-                  "NGA50 (kb)") +
-  theme_wo_legend()
-
 ## Number of contigs visualization
-p_c_box <- color_dot_boxplot(rbind(TM.contigs.long, 
-                        TA.contigs.long), 
-                  "contigs", 
+p_c_box <- color_dot_boxplot(filter(metaquast_all_criteria, 
+                            criteria=="num_contigs"), 
+                  "value", 
                   "# Contigs") +
+  scale_y_log10() +
   theme_wo_legend()
 
 ## Only legend for all figures
-p_c_box_legend <- color_dot_boxplot(rbind(TM.contigs.long, 
-                                          TA.contigs.long), 
-                                    "contigs", 
+p_c_box_legend <- color_dot_boxplot(filter(metaquast_all_criteria, 
+                            criteria=="num_contigs"), 
+                                    "value", 
                                     "# Contigs") +
   theme_with_legend()
 
 
-## Number of misassemblies visualization
-p_mis_box <- color_dot_boxplot(rbind(TM.misassemblies.long, 
-                        TA.misassemblies.long), 
-                  "misassemblies", 
-                  "# Misassemblies") +
+## Genome fraction visualization
+p_gf_box <- color_dot_boxplot(filter(metaquast_all_criteria, 
+                             criteria=="Genome_fraction"), 
+                  "value", 
+                  "% Genome fraction") +
+  scale_y_log10() +
+  theme_wo_legend() 
+  
+
+
+## Duplication ratio visualization
+p_dr_box <- color_dot_boxplot(filter(metaquast_all_criteria, 
+                               criteria=="Duplication_ratio"), 
+                  "value", 
+                  "Duplication ratio") +
   theme_wo_legend()
 
 
+## Largest alignment visualization
+p_la_box <- color_dot_boxplot(filter(metaquast_all_criteria, 
+                              criteria=="Largest_alignment"), 
+                  "value / 1000", 
+                  "Largest Alignment (kb)") +
+  scale_y_log10() +
+  theme_wo_legend()
+
+
+# ## Largest contig visualization
+# p_lc_box <- color_dot_boxplot(rbind(TM.Largest_contig.long, 
+#                         TA.Largest_contig.long), 
+#                   "LargestContig / 1000", 
+#                   "Largest Contig (kb)") +
+#   scale_y_log10() +
+#   theme_wo_legend()
+
+# ## LGA50 visualization
+# p_lga50_box <- color_dot_boxplot(rbind(TM.LGA50.long, 
+#                         TA.LGA50.long), 
+#                   "LGA50", 
+#                   "LGA50") +
+#   scale_y_log10() +
+#   theme_wo_legend()
+
+## NGA50 visualization
+p_nga50_box <- color_dot_boxplot(filter(metaquast_all_criteria, 
+                                criteria=="NGA50"), 
+                  "value / 1000", 
+                  "NGA50 (kb)") +
+  theme_wo_legend()
+
+
+
+## Number of misassemblies visualization
+# p_mis_box <- color_dot_boxplot(rbind(TM.misassemblies.long, 
+#                         TA.misassemblies.long), 
+#                   "misassemblies", 
+#                   "# Misassemblies") +
+#   theme_wo_legend()
+
+
 ## Number of mismatches per 100kbp visualization
-p_mism_box <- color_dot_boxplot(rbind(TM.num_mismatches_per_100_kbp.long, 
-                        TA.num_mismatches_per_100_kbp.long), 
-                  "mismatches", 
+p_mism_box <- color_dot_boxplot(filter(metaquast_all_criteria, 
+                            criteria=="num_mismatches_per_100_kbp"), 
+                  "value", 
                   "# Mismatches/100kbp") +
+  scale_y_log10() + 
   theme_wo_legend()
 
 
 ## Get the legend
 legend <- get_legend(p_c_box_legend)
 
-## Combine all visualization and legend
-p <- plot_grid(p_c_box, p_lc_box, p_gf_box, p_dr_box, p_la_box,
-  p_lga50_box, p_nga50_box, p_mis_box, p_mism_box,
+
+p6 <- plot_grid(p_c_box, p_la_box, p_gf_box, p_dr_box, 
+  p_nga50_box, p_mism_box,
   ncol = 3, labels = "AUTO"
 )
 
-assembly_evaluation_plot <- plot_grid(p, legend, rel_widths = c(3, 0.5))
+assembly_evaluation_plot6 <- plot_grid(p6, legend, rel_widths = c(3, 0.5))
 
-ggsave(filename = output_figure, plot = assembly_evaluation_plot, width = 11, height = 11)
+ggsave(filename = output_figure, plot = assembly_evaluation_plot6, width = 11, height = 8)
 
+metaquast_all_criteria %>% 
+    group_by(assembler, criteria) %>% 
+    summarize(average = mean(value, na.rm=T), sd = sd(value, na.rm=T)) %>% 
+    group_by(criteria) %>% 
+    mutate(rank = order(order(average, decreasing=ifelse(criteria %in% c(
+    "Genome_fraction",
+    "Largest_alignment", 
+    "NGA50"), TRUE, FALSE)))) -> summary.rank.ordered
 
+write.table(summary.rank.ordered, 
+  file = output_table, 
+  sep = "\t",
+  quote=F,
+  row.names=F)
 
-## Rank the assemblers
-small_better <- function(df) {
-  criteria <- colnames(df)[4]
-  final_rank <- df %>%
-    filter(get(criteria) != "NA") %>%
-    group_by(sample, reference) %>%
-    mutate(rank = rank(!!as.name(criteria), ties.method = "first")) %>%
-    group_by(assembler) %>%
-    summarise(rank = mean(rank)) %>%
-    mutate(rank = rank(rank, ties.method = "first"))
-}
+summary.rank.for.score <- filter(summary.rank.ordered, criteria != "num_misassemblies")
 
-big_better <- function(df) {
-  criteria <- colnames(df)[4]
-  final_rank <- df %>%
-    filter(get(criteria) != "NA") %>%
-    group_by(sample, reference) %>%
-    mutate(rank = rank(-!!as.name(criteria), ties.method = "first")) %>%
-    group_by(assembler) %>%
-    summarise(rank = mean(rank)) %>%
-    mutate(rank = rank(rank, ties.method = "first"))
-}
+# weights for 
+# Duplication_ratio, 
+# Genome_fraction
+# Largest_alignment
+# NGA50
+# num_contigs
+# num_mismatches_per_100_kbp
+weights <- c(0.1, 0.25, 0.25, 0.2, 0.1, 0.1)
 
+rank.max <- unique(summary.rank.for.score$assembler) %>% 
+  length()
+rank.min <- 1
 
-GF.rank <- big_better(rbind(TM.GenomeFraction.long, TA.GenomeFraction.long))
-GF.rank$criteria <- "Genome fraction"
+score.max <- 10
+score.min <- 1
 
-
-LA.rank <- big_better(rbind(TM.Largest_alignment.long, TA.Largest_alignment.long))
-LA.rank$criteria <- "Largest alignment"
-
-LC.rank <- big_better(rbind(TM.Largest_contig.long, TA.Largest_contig.long))
-LC.rank$criteria <- "Largest contig"
-
-
-LGA50.rank <- small_better(rbind(TM.LGA50.long, TA.LGA50.long))
-LGA50.rank$criteria <- "LGA50"
-
-NGA50.rank <- big_better(rbind(TM.NGA50.long, TA.NGA50.long))
-NGA50.rank$criteria <- "NGA50"
+mutate(summary.rank.for.score, score = (rank.max-rank)  * ((score.max-score.min)/(rank.max-rank.min)) + 1) %>%
+    group_by(assembler) %>% 
+    summarize(weighted.score=sum(score*weights)) ->
+    summary.weighted.score
 
 
-MA.rank <- small_better(rbind(TM.misassemblies.long, 
-                        TA.misassemblies.long))
-MA.rank$criteria <- "Number of misassembled"
-
-NC.rank <- small_better(rbind(TM.contigs.long, TA.contigs.long))
-NC.rank$criteria <- "Number of contigs"
-
-DR.rank <- small_better(rbind(TM.DuplicationRatio.long, TA.DuplicationRatio.long))
-DR.rank$criteria <- "Duplication ratio"
-
-
-MM.rank <- small_better(rbind(TM.num_mismatches_per_100_kbp.long, TA.num_mismatches_per_100_kbp.long))
-MM.rank$criteria <- "Mismatches per 100k"
-
-summary.rank <- rbind(GF.rank, LA.rank, LGA50.rank, LC.rank, NGA50.rank, MA.rank, NC.rank, DR.rank, MM.rank)
-
-
-summary.rank.ordered <- summary.rank %>%
-  group_by(criteria) %>%
-  arrange(criteria, rank)
-
-write.table(summary.rank.ordered, file = output_table, sep = "\t")
+write.table(summary.weighted.score, 
+  file = output_score, 
+  sep = "\t",
+  quote=F,
+  row.names=F)
