@@ -89,7 +89,8 @@ def common_options(f):
                             type=click.Path(),
                             default=None,
                             help="The directory where to put the results and figures. \
-The path can be specified either in the CLI as argument or in the config file.")
+The path can be specified either in the CLI as argument or in the config file. \
+    [default: outpath defined in the config file]")
                ]
 
     return functools.reduce(lambda x, opt: opt(x), options, f)
@@ -165,7 +166,8 @@ The files can be specified either in the CLI as argument or in the config file."
               type=str,
               help="Comma-separated list of reference genome files. Please \
 quote the whole parameter if there is any white space the file names. \
-The files can be specified either in the CLI as argument or in the config file.")
+The files can be specified either in the CLI as argument or in the config file.\
+    []")
 def asmeval(dryrun=False, threads=2, conda_prefix=None, **kwargs):
     #snpcall_smk = os.path.join(wd, "evaluate_snpcall_customize.smk")
     assembly_smk = os.path.join(wd, "evaluate_assembly_customize.smk")

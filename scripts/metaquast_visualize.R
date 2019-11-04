@@ -4,6 +4,7 @@ library(cowplot)
 ## Load the parameters from snakemake
 input_dir <- snakemake@params$input_dir
 output_figure <- snakemake@output$figure
+# output_radar <- snakemake@output$radar
 output_table <- snakemake@output$table
 output_score <- snakemake@output$score
 read_metaquast <- function(file_name, dir = input_dir) {
@@ -221,29 +222,86 @@ write.table(summary.rank.ordered,
 summary.rank.for.score <- filter(summary.rank.ordered, criteria != "num_misassemblies")
 
 # weights for 
-# Duplication_ratio, 
+# Duplication_ratio
 # Genome_fraction
 # Largest_alignment
 # NGA50
 # num_contigs
 # num_mismatches_per_100_kbp
-weights <- c(0.1, 0.25, 0.25, 0.2, 0.1, 0.1)
+#weights <- c(0.1, 0.25, 0.25, 0.2, 0.1, 0.1)
+#weights <- c(0.1, 0.3, 0.2, 0.1, 0.1, 0.2)
+weights <- c(0.1, 0.3, 0.3, 0.1, 0.1, 0.1)
 
-rank.max <- unique(summary.rank.for.score$assembler) %>% 
-  length()
-rank.min <- 1
 
-score.max <- 10
-score.min <- 1
+# rank.max <- unique(summary.rank.for.score$assembler) %>% 
+#   length()
+# rank.min <- 1
 
-mutate(summary.rank.for.score, score = (rank.max-rank)  * ((score.max-score.min)/(rank.max-rank.min)) + 1) %>%
-    group_by(assembler) %>% 
-    summarize(weighted.score=sum(score*weights)) ->
-    summary.weighted.score
+# score.max <- 10
+# score.min <- 1
 
+# mutate(summary.rank.for.score, score = (rank.max-rank)  * ((score.max-score.min)/(rank.max-rank.min)) + 1) %>%
+#     group_by(assembler) %>% 
+#     summarize(weighted.score=sum(score*weights)) ->
+#     summary.weighted.score
+
+
+# write.table(summary.weighted.score, 
+#   file = output_score, 
+#   sep = "\t",
+#   quote=F,
+#   row.names=F)
+
+
+
+# Score based on average performance
+
+big_better <- c("Genome_fraction", "Largest_alignment", "NGA50")
+small_better <- c("Duplication_ratio", "num_contigs", "num_mismatches_per_100_kbp")
+
+
+summary.rank.ordered %>% 
+  filter(criteria %in% big_better) %>% 
+  group_by(criteria) %>% 
+  mutate(min = min(average, na.rm=T), max = (max(average, na.rm=T))) %>%
+  mutate(scaled = (average - min)/(max-min)) ->
+  assembly_big_better
+
+summary.rank.ordered %>% 
+  filter(criteria %in% small_better) %>% 
+  group_by(criteria) %>% 
+  mutate(min = min(average, na.rm=T), max = (max(average, na.rm=T))) %>%
+  mutate(scaled = (max - average)/(max-min)) ->
+  assembly_small_better
+
+rbind(assembly_big_better, assembly_small_better) %>% 
+  select(assembler, criteria, scaled) %>% 
+  group_by(assembler) %>% 
+  summarize(weighted.score=10*sum(scaled*weights)) ->
+  summary.weighted.score
 
 write.table(summary.weighted.score, 
   file = output_score, 
   sep = "\t",
   quote=F,
   row.names=F)
+
+# if (!require(ggradar)) {
+#   devtools::install_github("ricardo-bion/ggradar", 
+#                           dependencies = TRUE)
+# }
+# library(ggradar)
+
+# rbind(assembly_big_better, assembly_small_better) %>% 
+#   select(assembler, criteria, scaled) %>%
+#   spread(criteria, scaled) %>%
+#   rename("Genome fraction" = "Genome_fraction", 
+#          "Largest alignment" = "Largest_alignment",
+#          "Duplication ratio" = "Duplication_ratio",
+#          "number contigs" = "num_contigs",
+#          "mismatches"="num_mismatches_per_100_kbp") ->
+#   assembly_radar 
+
+# radar_av_metric <- ggradar(assembly_radar)
+
+# ggsave(filename = output_radar, plot = radar_av_metric, width = 10, height = 8)

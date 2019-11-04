@@ -7,3 +7,7 @@ Ray*
 *.nohup
 *utect2.smk
 *.dict
+rm_contamination.smk
+ncbi_ref
+*haploflow*
+*/*.ncbi*.yaml

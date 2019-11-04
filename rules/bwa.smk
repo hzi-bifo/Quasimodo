@@ -1,7 +1,7 @@
 rule bwa:
     input:
-        r1 = rules.rm_phix.output.cl_r1,
-        r2 = rules.rm_phix.output.cl_r2,
+        r1 = rules.rm_phix.output.cl_r1 if not rm_human_ecoli else rules.rm_human_ecoli.output.cl_r1,
+        r2 = rules.rm_phix.output.cl_r2 if not rm_human_ecoli else rules.rm_human_ecoli.output.cl_r2,
         ref = ref_seq
     output:
         sortedbam = seq_dir + "/bam/{sample}.{ref_name}.bam"

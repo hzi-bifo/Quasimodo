@@ -21,7 +21,7 @@ def extract_tp_fp_snp(vcf_file, snp_file):
     filtered_out = vcf_file[:-4] + ".filtered.vcf"
     fp_out = os.path.join(dirname, "fp", fname_wo_ext + ".fp.vcf")
 
-    snp_by_caller = r'''awk -F"\t" '$4~/^[ACGT]$/&&$5~/^[ACGT]$/&&$6>=20' {}'''.format(
+    snp_by_caller = r'''awk -F"\t" '$4~/^[ACGT]$/&&$5~/^[ACGT]$/&&($6>=20||$6==".")' {}'''.format(
         vcf_file)
 
     filter_qual_cmd = r'''(grep -E "^#" {};{}) > {}'''.format(vcf_file,
@@ -65,7 +65,7 @@ def extract_tp_fp_custom_snp(vcf_file, snp_file, outdir):
     filtered_out = os.path.join(outdir, fname_wo_ext + ".filtered.vcf")
     fp_out = os.path.join(outdir, "fp", fname_wo_ext + ".fp.vcf")
 
-    snp_by_caller = r'''awk -F"\t" '$4~/^[ACGT]$/&&$5~/^[ACGT]$/&&$6>=20' {}'''.format(
+    snp_by_caller = r'''awk -F"\t" '$4~/^[ACGT]$/&&$5~/^[ACGT]$/&&($6>=20||$6==".")' {}'''.format(
         vcf_file)
 
     filter_qual_cmd = r'''(grep -E "^#" {};{}) > {}'''.format(vcf_file,

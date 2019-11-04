@@ -14,6 +14,7 @@ cwd = os.getcwd()
 
 # Samples to corresponding TM or TM mixture folders
 
+# ruleorder: metaspades > megahit > tadpole > abyss > spades > ray > idba > savage_full_ref
 
 def make_mix():
     return ["{}/{}".format(sample.split("-")[0], sample) for sample in sample_list]
@@ -124,7 +125,7 @@ else:
         params:
             cwd = cwd,
             savage_sample_dir = assembly_dir + "/savage/{sample}"
-        threads: threads
+        threads: 10
         shell:
             """
             mkdir -p {params.savage_sample_dir}

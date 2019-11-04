@@ -1,7 +1,10 @@
+r1 = rules.rm_phix.output.cl_r1 if not rm_human_ecoli else rules.rm_human_ecoli.output.cl_r1
+r2 = rules.rm_phix.output.cl_r2 if not rm_human_ecoli else rules.rm_human_ecoli.output.cl_r2
+
 rule spades:
     input:
-        r1 = rules.rm_phix.output.cl_r1,
-        r2 = rules.rm_phix.output.cl_r2
+        r1 = r1,
+        r2 = r2
     output:
         scaffolds = assembly_dir + "/spades/{sample}/scaffolds.fasta",
         renamed_scaffolds = assembly_dir + \
@@ -22,8 +25,8 @@ rule spades:
 
 rule metaspades:
     input:
-        r1 = rules.rm_phix.output.cl_r1,
-        r2 = rules.rm_phix.output.cl_r2
+        r1 = r1,
+        r2 = r2
     output:
         scaffolds = assembly_dir + "/metaspades/{sample}/scaffolds.fasta",
         renamed_scaffolds = assembly_dir + \
@@ -44,8 +47,8 @@ rule metaspades:
 
 rule tadpole:
     input:
-        r1 = rules.rm_phix.output.cl_r1,
-        r2 = rules.rm_phix.output.cl_r2
+        r1 = r1,
+        r2 = r2
     output:
         cor_fq_r1 = assembly_dir + \
             "/tadpole/{sample}/{sample}.tadpole.corr.r1.fq",
@@ -71,8 +74,8 @@ rule tadpole:
 
 rule megahit:
     input:
-        r1 = rules.rm_phix.output.cl_r1,
-        r2 = rules.rm_phix.output.cl_r2
+        r1 = r1,
+        r2 = r2
     output:
         scaffolds = assembly_dir + \
             "/megahit/{sample}/{sample}.megahit.contigs.fa",
@@ -88,16 +91,18 @@ rule megahit:
     threads: threads
     shell:
         """
-        rm -rf {params.megahit_out}
-        megahit -t {threads} --continue --k-min 21 --k-max 151 -1 {input.r1} \
+        rmdir --ignore-fail-on-non-empty {params.megahit_out}
+        
+        megahit -t {threads} --k-min 21 --k-max 151 -1 {input.r1} \
             -2 {input.r2} -o {params.megahit_out}  --out-prefix {params.prefix}
         cp {output.scaffolds} {output.renamed_scaffolds}
         """
+        # rm -rf {params.megahit_out}
 
 rule ray:
     input:
-        r1 = rules.rm_phix.output.cl_r1,
-        r2 = rules.rm_phix.output.cl_r2
+        r1 = r1,
+        r2 = r2
     output:
         scaffolds = assembly_dir + "/ray/{sample}/Scaffolds.fasta",
         renamed_scaffolds = assembly_dir + "/ray/{sample}.ray.scaffolds.fa"
@@ -117,8 +122,8 @@ rule ray:
 
 rule idba:
     input:
-        r1 = rules.rm_phix.output.cl_r1,
-        r2 = rules.rm_phix.output.cl_r2
+        r1 = r1,
+        r2 = r2
     output:
         scaffolds = assembly_dir + "/idba/{sample}/scaffold.fa",
         renamed_scaffolds = assembly_dir + "/idba/{sample}.idba.scaffolds.fa"
@@ -140,8 +145,8 @@ rule idba:
 
 rule abyss:
     input:
-        r1 = rules.rm_phix.output.cl_r1,
-        r2 = rules.rm_phix.output.cl_r2
+        r1 = r1,
+        r2 = r2
     output:
         scaffolds = assembly_dir + \
             "/abyss/{sample}/{sample}.abyss-scaffolds.fa",

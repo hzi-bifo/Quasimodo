@@ -43,6 +43,7 @@ wildcard_constraints:
 
 # Load read pairs
 
+rm_human_ecoli = False
 
 def get_fastq(w):
     return samples.loc[(w.sample), ["r1", "r2"]].dropna()
