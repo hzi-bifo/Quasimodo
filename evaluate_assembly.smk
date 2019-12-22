@@ -7,7 +7,7 @@ assemblers = ["spades", "metaspades", "tadpole", "abyss",
               "megahit", "ray", "idba", "savage"]  # "haploflow",
 metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction",
                       "Duplication_ratio", "Largest_alignment", "LGA50",
-                      "NGA50", "num_misassemblies", "num_mismatches_per_100_kbp"]
+                      "NGA50", "num_mismatches_per_100_kbp"]
 
 # Get current working directory
 cwd = os.getcwd()
@@ -34,7 +34,8 @@ rule all:
                mix=["TM", "TA"], criteria=metaquast_criteria),
         results_dir + "/final_figures/assembly_metaquast_evaluation.pdf",
         results_dir + "/final_tables/assembly_metaquast_ranking.tsv",
-        results_dir + "/final_tables/assembly_metaquast_score.tsv"
+        results_dir + "/final_tables/assembly_metaquast_score.tsv",
+        results_dir + "/final_tables/assembly_metaquast_scaled.tsv"
 
 
 # Build index for reference
@@ -153,7 +154,9 @@ rule metaquast:
         ref_fai = lambda wc: [tb_ref + ".fai", ad_ref + ".fai"] if
         wc.mix == "TA" else [tb_ref + ".fai", merlin_ref + ".fai"]
     output:
-        report = metaquast_dir + "/{mix}/{sample, [A-Z]+-[0-9\-]+}/report.html"
+        report = metaquast_dir + "/{mix}/{sample, [A-Z]+-[0-9\-]+}/report.html",
+        tsv_report = metaquast_dir + "/{mix}/{sample, [A-Z]+-[0-9\-]+}/combined_reference/report.tsv"
+
     conda:
         "config/conda_env.yaml"
     threads: threads
@@ -186,11 +189,14 @@ rule summarize:
 # Visualize the evaluation
 rule visualize:
     input:
-        expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}.merged.tsv",
-               mix=["TA", "TM"], criteria=metaquast_criteria)
+        individual_ref_reports = expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}.merged.tsv",
+                mix=["TA", "TM"], criteria=metaquast_criteria),
+        combined_ref_reports = expand("{metaquastDir}/{strain_sample}/combined_reference/report.tsv", metaquastDir=metaquast_dir,
+               assembler=assemblers, strain_sample=make_mix())
     output:
         figure = results_dir + "/final_figures/assembly_metaquast_evaluation.pdf",
         table = results_dir + "/final_tables/assembly_metaquast_ranking.tsv",
+        radarplot_table = results_dir + "/final_tables/assembly_metaquast_scaled.tsv",
         score = results_dir + "/final_tables/assembly_metaquast_score.tsv"
     conda:
         "config/conda_env.yaml"

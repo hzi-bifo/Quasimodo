@@ -143,7 +143,7 @@ specified either in the CLI as argument or in the config file.")
               type=str,
               help="Comma-separated list of reference genome files. Please \
 quote the whole parameter if there is any white space the file names. \
-The files can be specified either in the CLI as argument or in the config file.")
+(The files can be specified either in the CLI as argument or in the config file.)")
 def snpeval(dryrun=False, conda_prefix=None, **kwargs):
     snpcall_smk = os.path.join(wd, "evaluate_snpcall_customize.smk")
     snake_kwargs = {}
@@ -166,8 +166,7 @@ The files can be specified either in the CLI as argument or in the config file."
               type=str,
               help="Comma-separated list of reference genome files. Please \
 quote the whole parameter if there is any white space the file names. \
-The files can be specified either in the CLI as argument or in the config file.\
-    []")
+(The files can be specified either in the CLI as argument or in the config file.)")
 def asmeval(dryrun=False, threads=2, conda_prefix=None, **kwargs):
     #snpcall_smk = os.path.join(wd, "evaluate_snpcall_customize.smk")
     assembly_smk = os.path.join(wd, "evaluate_assembly_customize.smk")

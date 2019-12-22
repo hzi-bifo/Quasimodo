@@ -6,15 +6,16 @@ except AttributeError as e:
         "The scaffold files from assembly are not specified.")
 
 metaquast_dir = results_dir + "/metaquast"
-metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction",
-                      "Duplication_ratio", "Largest_alignment", "LGA50",
-                      "NGA50", "num_misassemblies", "num_mismatches_per_100_kbp"]
+metaquast_criteria = ["num_contigs", "Genome_fraction",
+                      "Duplication_ratio", "Largest_alignment",
+                      "NGA50", "num_mismatches_per_100_kbp"]
 
 rule all:
     input:
         assembly_benchmark_figure = results_dir + \
             "/final_figures/assembly_benchmark.pdf",
-      #  assembly_rank_table = results_dir + "/final_tables/assembly_rank.txt"
+        assembly_rank_table = results_dir + "/final_tables/assembly_metaquast_ranking.tsv",
+        assembly_score = results_dir + "/final_tables/assembly_metaquast_score.tsv"
 
 rule build_idx:
     input:
@@ -60,7 +61,8 @@ rule visualize:
     output:
         assembly_benchmark_figure = results_dir + \
             "/final_figures/assembly_benchmark.pdf",
-       # assembly_rank_table = results_dir + "/final_tables/assembly_rank.txt"
+        assembly_rank_table = results_dir + "/final_tables/assembly_metaquast_ranking.tsv",
+        assembly_score = results_dir + "/final_tables/assembly_metaquast_score.tsv"
     params: number_ref = len(refs)
     conda:
         "config/conda_env.yaml"
