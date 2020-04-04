@@ -15,7 +15,7 @@ import functools
 import snakemake
 
 wd = os.path.dirname(os.path.realpath(__file__))
-VERSION = '0.1'
+VERSION = '0.2'
 
 
 class SpecialHelpOrder(click.Group):
@@ -101,7 +101,7 @@ The path can be specified either in the CLI as argument or in the config file. \
 @click.option("-e",
               "--evaluation",
               required=True,
-              type=click.Choice(["all", "snpcall", "assembly"]),
+              type=click.Choice(["all", "variantcall", "assembly"]),
               help="The evaluation to run.")
 @click.option("-s",
               "--slow",
@@ -114,23 +114,23 @@ files provided within this software. If this parameter is on, \
 this software will run all the analyses to generate outputs \
 based on reads for benchmarking which is very time consuming.")
 def hcmv(evaluation, dryrun=False, conda_prefix=None, slow=False, **kwargs):
-    snpcall_smk = os.path.join(wd, "evaluate_snpcall.smk")
-    assembly_smk = os.path.join(wd, "evaluate_assembly.smk")
+    variantcall_smk = os.path.join(wd, "eval_variantcall.smk")
+    assembly_smk = os.path.join(wd, "eval_assembly.smk")
     snake_kwargs = dict(runOnReads=slow)
     for arg, val in kwargs.items():
         if val != None:
             snake_kwargs[arg] = val
-    if evaluation == "snpcall":
-        snakes = [snpcall_smk]
+    if evaluation == "variantcall":
+        snakes = [variantcall_smk]
     elif evaluation == "assembly":
         snakes = [assembly_smk]
     else:
-        snakes = [snpcall_smk, assembly_smk]
+        snakes = [variantcall_smk, assembly_smk]
     for snake in snakes:
         run_snake(snake, dryrun, conda_prefix, **snake_kwargs)
 
 
-@cli.command(help_priority=2, help="SNP calling benchmark for customized dataset")
+@cli.command(help_priority=2, help="Variants benchmark for customized dataset")
 @common_options
 @click.option("-v",
               "--vcfs",
@@ -144,13 +144,13 @@ specified either in the CLI as argument or in the config file.")
               help="Comma-separated list of reference genome files. Please \
 quote the whole parameter if there is any white space the file names. \
 (The files can be specified either in the CLI as argument or in the config file.)")
-def snpeval(dryrun=False, conda_prefix=None, **kwargs):
-    snpcall_smk = os.path.join(wd, "evaluate_snpcall_customize.smk")
+def vareval(dryrun=False, conda_prefix=None, **kwargs):
+    variantcall_smk = os.path.join(wd, "eval_variant_custom.smk")
     snake_kwargs = {}
     for arg, val in kwargs.items():
         if val != None:
             snake_kwargs[arg] = val
-    run_snake(snpcall_smk, dryrun, conda_prefix, **snake_kwargs)
+    run_snake(variantcall_smk, dryrun, conda_prefix, **snake_kwargs)
 
 
 @cli.command(help_priority=3, help="Assembly benchmark for customized dataset")
@@ -169,7 +169,7 @@ quote the whole parameter if there is any white space the file names. \
 (The files can be specified either in the CLI as argument or in the config file.)")
 def asmeval(dryrun=False, threads=2, conda_prefix=None, **kwargs):
     #snpcall_smk = os.path.join(wd, "evaluate_snpcall_customize.smk")
-    assembly_smk = os.path.join(wd, "evaluate_assembly_customize.smk")
+    assembly_smk = os.path.join(wd, "eval_assembly_custom.smk")
     snake_kwargs = {}
     for arg, val in kwargs.items():
         if val != None:

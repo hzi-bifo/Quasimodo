@@ -1,9 +1,9 @@
 ## QuasiModo - Quasispecies Metric Determination on Omics
-> #### Strain-level assembly and SNP calling benchmarking based on sequencing data of mixed strain samples for HCMV
+> #### Strain-level assembly and variant calling benchmarking based on sequencing data of mixed strain samples for HCMV
 
-This repository contains the scripts and pipeline that reproduces the results of the HCMV benchmarking study. In this study we evaluated genome assemblers and variant callers on 6 in vitro generated, mixed strain HCMV sequence samples, each consisting of two lab strains in different abundance ratios. This tool can also be used to evaluate assemblies and SNP calling results on other similar datasets.
+This repository contains the scripts and pipeline that reproduces the results of the HCMV benchmarking study. In this study we evaluated genome assemblers and variant callers on 10 in vitro generated, mixed strain HCMV sequence samples, each consisting of two lab strains in different abundance ratios. This tool can also be used to evaluate assemblies and variant calling results on other similar datasets.
 
-In this benchmarking study: variants callers `BCFtools` (v1.9), `VarScan` (v2.4.3), `Freebayes` (v1.2.0), `LoFreq` (v2.1.3.1), `CLC Genomics Workbench` (v11.0.1) were evaluated. For the assembly benchmarking, `ABySS` (v2.1.4), `megahit` (v1.1.3) , `IDBA` (v1.1.3), `SPAdes` (v3.12.0), `Ray` (v2.3.1), `tadpole` (v37.99) were assessed. The haplotype reconstruction program `Savage` (v0.4.0) was also evaluated. 
+In this benchmarking study: variants callers `BCFtools` (v1.9), `VarScan` (v2.4.3), `Freebayes` (v1.2.0), `LoFreq` (v2.1.3.1), `CLC Genomics Workbench` (v11.0.1) were evaluated. For the assembly benchmarking, `ABySS` (v2.1.4), `megahit` (v1.1.3) , `IDBA` (v1.1.3), `SPAdes` (v3.12.0), `Ray` (v2.3.1), `Tadpole` (v37.99) were assessed. The haplotype reconstruction program `Savage` (v0.4.0) was also evaluated. 
 
 ### Prerequirements
 
@@ -43,7 +43,7 @@ TA-1-10	../HCMV_benchmark_output/data/seqs/reads/TA-1-10.qc.r1.fq.gz	../HCMV_ben
 Please modify the paths to the sequencing files which you have downloaded accordingly. In this example, the `<your project path>` is `../HCMV_benchmark_output` and the reads are in the `../HCMV_benchmark_output/data/seqs/reads`.
 
 
-#### ! Due to the high computational and time cost, by default this program do not run the whole benchmark for HCMV dataset from scratch (based on reads), instead it benchmarks the SNP call and assembly based on the VCF files and scaffolds provided within this program under `data` directory. 
+#### ! Due to the high computational and time cost, by default this program do not run the whole benchmark for HCMV dataset from scratch (based on reads), instead it benchmarks the variant call and assembly based on the VCF files and scaffolds provided within this program under `data` directory. 
 
 ### Adapt the configuration file
 All the paths must be either relative path to the parent directory of `config` folder or absolute path.
@@ -78,11 +78,11 @@ Options:
 
 Commands:
   hcmv     Benchmarking for HCMV dataset
-  snpeval  SNP calling benchmark for customized dataset
+  vareval  Variant calling benchmark for customized dataset
   asmeval  Assembly benchmark for customized dataset
 ```
 
-This program consists of three subcommands: `hcmv`, `snpeval`, `asmeval`. The first one is used for the benchmarking on our HCMV datasets. And the other two are for the SNP call and assembly evaluation on customized datasets.
+This program consists of three subcommands: `hcmv`, `vareval`, `asmeval`. The first one is used for the benchmarking on our HCMV datasets. And the other two are for the variant call and assembly evaluation on customized datasets.
 
 The argumentrs and options in the `hcmv` command:
 ```
@@ -99,7 +99,7 @@ Options:
   -t, --threads INTEGER           The number of threads to use.  [default: 2]
   -d, --dryrun                    Print the details without run the pipeline.
                                   [default: False]
-  -e, --evaluation [all|snpcall|assembly]
+  -e, --evaluation [all|variantcall|assembly]
                                   The evaluation to run.  [required]
   -s, --slow                      Run the evaluation based on reads, which is
                                   very slow. By default, the evaluation will
@@ -125,7 +125,7 @@ If you expect to the benchmarking based on the reads, you need to specify the `-
 #### Assess variant callers and analyze the mutation context of identified variants
 
 ```shell
-python3 run_benchmark.py hcmv -e snpcall -t 10 -c ~/miniconda3/envs
+python3 run_benchmark.py hcmv -e variantcall -t 10 -c ~/miniconda3/envs
 ```
 If you wish to the benchmarking based on the reads, you need to specify the `--slow` or `-s` option which allows you to generate the variant calling results from reads.
 
@@ -266,11 +266,11 @@ python3 run_benchmark.py asmeval -t 10 -c ~/miniconda3/envs \
 ```
 
 #### Assess variant callers
-The arguments and options of `snpeval` command:
+The arguments and options of `vareval` command:
 ```
-Usage: run_benchmark.py snpeval [OPTIONS]
+Usage: run_benchmark.py vareval [OPTIONS]
 
-  SNP calling benchmark for customized dataset
+  Variant calling benchmark for customized dataset
 
 Options:
   -o, --outpath PATH       The directory where to put the results and figures.
@@ -295,7 +295,7 @@ Options:
 
 - Run the benchmarking
 ```shell
-python3 run_benchmark.py snpeval -t 10 -c ~/miniconda3/envs \
+python3 run_benchmark.py vareval -t 10 -c ~/miniconda3/envs \
         -v "<comma-separated list of VCF files>" \
         -r "<comma-separated list of reference genomes>" \
         -o <output directory>

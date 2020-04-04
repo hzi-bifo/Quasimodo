@@ -25,6 +25,8 @@ dependencies:
   - mummer=3.23
   - pip=19.1.1
   - pandas=0.24.2
+  - rtg-tools=3.11
+  - tabix=0.2.6
   - r-tidyverse=1.2.1
   - r-cowplot=0.9.4
   - r-reshape2=1.4.3

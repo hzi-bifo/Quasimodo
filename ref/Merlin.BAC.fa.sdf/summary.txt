@@ -1,0 +1,18 @@
+
+Input Data
+Files              : Merlin.BAC.fa
+Format             : FASTA
+Type               : DNA
+Number of sequences: 1
+Total residues     : 245038
+Minimum length     : 245038
+Mean length        : 245038
+Maximum length     : 245038
+
+Output Data
+SDF-ID             : 7abadedd-d7da-41d5-965f-cdcbebf29f72
+Number of sequences: 1
+Total residues     : 245038
+Minimum length     : 245038
+Mean length        : 245038
+Maximum length     : 245038

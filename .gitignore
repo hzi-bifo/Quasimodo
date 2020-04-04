@@ -2,7 +2,8 @@
 modify_savage.done
 Rplots.pdf
 *.log
-data/assembly/*
+data/assembly
+data/snp
 Ray*
 *.nohup
 *utect2.smk
@@ -11,3 +12,14 @@ rm_contamination.smk
 ncbi_ref
 *haploflow*
 */*.ncbi*.yaml
+logs
+eval_haplo_assembler.smk
+support
+old
+libs/not_used
+libs/PEHaplo
+libs/PredictHaplo
+libs/virgena
+libs/vicuna.zip
+*.bak
+*.old

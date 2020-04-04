@@ -1,0 +1,18 @@
+
+Input Data
+Files              : AD169.BAC.fa
+Format             : FASTA
+Type               : DNA
+Number of sequences: 1
+Total residues     : 235169
+Minimum length     : 235169
+Mean length        : 235169
+Maximum length     : 235169
+
+Output Data
+SDF-ID             : e575fe82-0f9e-4de9-841d-3cfc29cd3404
+Number of sequences: 1
+Total residues     : 235169
+Minimum length     : 235169
+Mean length        : 235169
+Maximum length     : 235169

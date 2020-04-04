@@ -13,6 +13,10 @@ venn_snpcallers <- unlist(snakemake@params$fp_compared_snpcallers)
 
 snp_list = list()
 
+caller_map <- list(bcftools="BCFtools",clc="CLC",freebayes="FreeBayes",
+        gatk="GATK",lofreq="LoFreq",varscan="VarScan2")
+
+
 
 for (file in fp_vcf){
     snpcaller_ref_sample <- unlist(strsplit(basename(file), "\\."))
@@ -22,28 +26,33 @@ for (file in fp_vcf){
  
     mixstrain <- substr(sample, 1, 2)
 
-    snp_table <- tryCatch({
-        read.table(file, sep="\t", comment.char="#", header=F, 
-               colClasses=c("NULL", "character", "NULL", rep("character", 2), rep("NULL", 3)))
-        }, 
-        error = function(e){
-            snp_table <- data.frame(position=character(), ref=character(), alt=character())
-    })
-
-    #all_caller_table <- rbind(all_caller_table, snp_table)
-    if (nrow(snp_table) > 0){
-        snp_table <- snp_table[,1:3]
-        colnames(snp_table) <- c("position", "ref", "alt")
-        snp_vector <- do.call(paste, c(snp_table %>% filter(ref %in% c("A", "C", "G" ,"T"), 
-                                                alt %in% c("A", "C", "G" ,"T")), sep="-"))
-        snp_identify_count <- length(snp_vector)
-    }
-    else{
-        snp_vector <- c()
-        snp_identify_count <- 0
-    }
-
     if (snpcaller %in% venn_snpcallers){
+
+        snpcaller <- caller_map[[snpcaller]]
+
+        snp_table <- tryCatch({
+            read.table(file, sep="\t", comment.char="#", header=F, 
+                colClasses=c("NULL", "character", "NULL", rep("character", 2), rep("NULL", 3)))
+            }, 
+            error = function(e){
+                snp_table <- data.frame(position=character(), ref=character(), alt=character())
+        })
+
+        #all_caller_table <- rbind(all_caller_table, snp_table)
+        if (nrow(snp_table) > 0){
+            snp_table <- snp_table[,1:3]
+            colnames(snp_table) <- c("position", "ref", "alt")
+            snp_vector <- do.call(paste, c(snp_table %>% filter(ref %in% c("A", "C", "G" ,"T"), 
+                                                    alt %in% c("A", "C", "G" ,"T")), sep="-"))
+            snp_identify_count <- length(snp_vector)
+        }
+        else{
+            snp_vector <- c()
+            snp_identify_count <- 0
+        }
+
+        # if (snpcaller %in% venn_snpcallers){
+
         if (sample %in% names(snp_list)){
             snp_list[[sample]][[snpcaller]] <- snp_vector      
         }
@@ -51,6 +60,7 @@ for (file in fp_vcf){
             snp_list[[sample]] <- list(snp_vector)
             names(snp_list[[sample]]) <- c(snpcaller)
         }
+        # }
     }
 }
 

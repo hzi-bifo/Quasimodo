@@ -1,0 +1,7 @@
+name: hcmv_benchmark_iva
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - iva=1.0.9
