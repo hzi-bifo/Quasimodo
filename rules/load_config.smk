@@ -26,9 +26,16 @@ sample_refname_dict = {"TM-0-1": "Merlin", "TM-1-1": "Merlin",
 
 # Sample list
 if not run_on_reads:
+    # sample_list, ref_names = glob_wildcards(os.path.join(cd,
+    #                                                      "data/snp/vcf/clc") + "/{sample}.{ref_name}.clc.vcf")
+
+    # Extract variants
+    if not os.path.exists(cd + "/data/snp"):
+        shell("tar -xzvf {} -C {}".format(cd + "/data/snp.tar.gz",
+                                          cd + "/data/"))
+    
     sample_list, ref_names = glob_wildcards(os.path.join(cd,
                                                          "data/snp/vcf/clc") + "/{sample}.{ref_name}.clc.vcf")
-
 
 else:
     samples = pd.read_csv(config["samplesDesc"],

@@ -59,11 +59,6 @@ include: "rules/index.smk"
 
 # If not run on reads, copy the resulting VCF provided within the software for benchmarking
 if not run_on_reads:
-    # Extract variants
-    if not os.path.exists(cd + "/data/snp"):
-        shell("tar -xzvf {} -C {}".format(cd + "/data/snp.tar.gz",
-                                          cd + "/data/"))
-
     rule cp_vcf:
         input: 
             expand(cd + "/data/snp/vcf/{{snpcaller}}/{{sample}}.{{ref}}.{{snpcaller}}.{ext}", 
