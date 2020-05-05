@@ -25,8 +25,11 @@ read_metaquast <- function(file_name, dir = input_dir) {
 
   metaquast <- read.table(file, sep = "\t", header = T, na.strings = "-", check.names = F) %>%
     separate(Assemblies, c("sample", "assembler"), sep = "\\.")
-  ref1 <- 3
-  ref2 <- 4
+  ref1 <- 'TB40E'
+  ref2 <- ifelse(startsWith(basename(file_name), 'TA'), 'AD169', 'Merlin')
+
+  # ref1 <- 3
+  # ref2 <- 4
   if (grepl("NGA50", file_name)) {
     metaquast[, ref1] <- ifelse(endsWith(metaquast$sample, "_0_1"), -1, metaquast[, ref1])
     metaquast[, ref2] <- ifelse(endsWith(metaquast$sample, "_1_0"), -1, metaquast[, ref2])

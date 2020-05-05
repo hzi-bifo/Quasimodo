@@ -9,11 +9,13 @@ In this benchmarking study: variants callers `BCFtools` (v1.9), `VarScan` (v2.4.
 
 To reproduce the output, you need to use `Bioconda`.
 
-Please follow the instruction [here](https://bioconda.github.io) to install `Bioconda`. And then you need to install `snakemake` and Python package `click`:
+Please follow the instruction [here](https://bioconda.github.io) to install `Bioconda`. And then you need to install `snakemake`, `csvtk` and Python package `click`:
 
 ```shell
 conda install snakemake=5.3.0
+conda install csvtk=0.18.2
 conda install click=7.0
+
 ```
 
 After this has been done, download the pipeline onto your system:

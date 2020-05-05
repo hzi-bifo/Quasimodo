@@ -20,6 +20,23 @@ metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction",
 def make_mix():
     return ["{}/{}".format(sample.split("-")[0], sample) for sample in sample_list]
 
+def get_assembly_ref(wc):
+    if wc.sample.startswith('TA'):
+        if wc.sample.endswith('-1-0'):
+            ref_list = [tb_ref]
+        elif wc.sample.endswith('-0-1'):
+            ref_list = [ad_ref]
+        else:
+            ref_list = [tb_ref, ad_ref]
+    else:
+        if wc.sample.endswith('-1-0'):
+            ref_list = [tb_ref]
+        elif wc.sample.endswith('-0-1'):
+            ref_list = [merlin_ref]
+        else:
+            ref_list = [tb_ref, merlin_ref]
+    return ','.join(ref_list)
+
 
 onsuccess:
     print("The assembly evaluation is done!")
@@ -85,8 +102,9 @@ rule metaquast:
     threads: threads
     params:
         metaquast_outdir = metaquast_dir + "/{mix}/{sample}",
-        ref = lambda wc: ",".join(
-            [tb_ref, ad_ref]) if wc.mix == "TA" else ",".join([tb_ref, merlin_ref])
+        ref = get_assembly_ref
+        # ref = lambda wc: ",".join(
+        #     [tb_ref, ad_ref]) if wc.mix == "TA" else ",".join([tb_ref, merlin_ref])
     shell:
         """
         metaquast.py --unique-mapping -o {params.metaquast_outdir} -R {params.ref} {input.scaffolds} -t {threads}
@@ -99,15 +117,19 @@ rule summarize:
                strain_sample=make_mix())
     output:
         metaquast_dir + "/summary_for_figure/{mix}.{criteria}.merged.tsv"
-    conda:
-        "config/conda_env.yaml"
+    # conda:
+    #     "config/conda_env.yaml"
     params:
-        input_files = metaquast_dir + "/{mix}/*/summary/TSV/{criteria}.tsv"
+        input_files = metaquast_dir + "/{mix}/*/summary/TSV/{criteria}.tsv",
+        joiner = cd + '/program/join_tsv.py'
     shell:
         """
-        paste -d"\t" {params.input_files}|sed '1s/\.scaffolds//g' |csvtk transpose -Tt -|\
+        python {params.joiner} {params.input_files}|sed '1s/\.scaffolds//g' |csvtk transpose -Tt -|\
             awk 'NR==1{{print}}$1!="Assemblies"{{print}}'|sed '1s/\.GFP\|\.BAC//g' > {output}
         """
+
+#    paste -d"\t" {params.input_files}|sed '1s/\.scaffolds//g' |csvtk transpose -Tt -|\
+#             awk 'NR==1{{print}}$1!="Assemblies"{{print}}'|sed '1s/\.GFP\|\.BAC//g' > {output}
 
 # Visualize the evaluation
 rule visualize:

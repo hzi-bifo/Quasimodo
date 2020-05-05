@@ -15,7 +15,7 @@ import functools
 import snakemake
 
 wd = os.path.dirname(os.path.realpath(__file__))
-VERSION = '0.2'
+VERSION = '0.3'
 
 
 class SpecialHelpOrder(click.Group):
