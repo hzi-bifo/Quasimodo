@@ -343,3 +343,25 @@ rule rename_savage:
 #         cd {params.cd}
 #         cp {output.contigs} {output.scaffolds}
 #         """
+
+# Reference based assembly
+rule virgena:
+    input:
+        r1 = os.path.abspath(r1),
+        r2 = os.path.abspath(r2),
+        ref = ref_seq
+    output:
+        contigs = assembly_dir + "/virgena/{sample}/contigs.fasta",
+        # scaffolds = assembly_dir + "/virgena/{sample}.virgena.scaffolds.fa"
+    benchmark:
+        report_dir + "/benchmarks/assembler/{sample}.virgena.benchmark.txt"
+    priority: 72
+    params:
+        out_dir = assembly_dir + "/virgena/{sample}"
+    threads: 24
+    shell:
+        """
+        python program/virgena_config_generator.py {input.r1} {input.r2} {input.ref[0]} {params.out_dir} \
+            -t {threads} > {params.out_dir}/config.xml
+        java -jar libs/virgena/VirGenA.jar assemble -c {params.out_dir}/config.xml
+        """

@@ -3,8 +3,15 @@ include: "rules/load_config.smk"
 
 assembly_dir = "/".join([project_dir, "results/assembly"])
 metaquast_dir = "/".join([project_dir, "results/metaquast"])
-assemblers = ["spades", "metaspades", "tadpole", "abyss", 
-              "megahit", "ray", "idba", "vicuna", "iva", "savage"]  # "haploflow", "pehaplo", "quasirecomb",
+# assemblers = ["spades", "metaspades", "tadpole", "abyss", 
+#               "megahit", "ray", "idba", "vicuna", "iva", "savage"]  # "haploflow", "pehaplo", "quasirecomb",
+
+assemblers = ['virgena']
+
+v_samples_1 = ['TM-1-0', 'TA-1-1', 'TA-1-10', 'TA-1-0', 'TA-1-50', 'TM-1-1']
+v_samples_2 = ['TM-1-10', 'TA-0-1']
+v_samples_3 = ['TM-1-50']
+v_samples_4 = ['TM-0-1']
 
 metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction",
                       "Duplication_ratio", "Largest_alignment", "LGA50",
@@ -44,12 +51,12 @@ onsuccess:
 
 rule all:
     input:
-        metaquast_report = expand(metaquast_dir + "/{strain_sample}/report.html",
-                strain_sample=make_mix()),
-        all_sample_metaquast_table = results_dir + "/final_tables/all_sample_metaquast.tsv",
-        figure = results_dir + "/final_figures/assembly_metaquast_evaluation.pdf"
-        # expand("{assemblyDir}/{assembler}/{sample}.{assembler}.scaffolds.fa",
-        #        assemblyDir=assembly_dir, sample=sample_list, assembler=assemblers),
+        # metaquast_report = expand(metaquast_dir + "/{strain_sample}/report.html",
+        #         strain_sample=make_mix()),
+        # all_sample_metaquast_table = results_dir + "/final_tables/all_sample_metaquast.tsv",
+        # figure = results_dir + "/final_figures/assembly_metaquast_evaluation.pdf"
+        expand("{assemblyDir}/{assembler}/{sample}/contigs.fasta",
+               assemblyDir=assembly_dir, sample=v_samples_1, assembler=assemblers),
         
         # expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}.merged.tsv",
         #        mix=["TM", "TA"], criteria=metaquast_criteria),
@@ -128,8 +135,6 @@ rule summarize:
             awk 'NR==1{{print}}$1!="Assemblies"{{print}}'|sed '1s/\.GFP\|\.BAC//g' > {output}
         """
 
-#    paste -d"\t" {params.input_files}|sed '1s/\.scaffolds//g' |csvtk transpose -Tt -|\
-#             awk 'NR==1{{print}}$1!="Assemblies"{{print}}'|sed '1s/\.GFP\|\.BAC//g' > {output}
 
 # Visualize the evaluation
 rule visualize:

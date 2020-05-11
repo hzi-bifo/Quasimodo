@@ -21,6 +21,7 @@ metaquast_criteria <- c(
 kb_scale_criteria <- c("Largest_alignment", "NGA50") 
 
 ## Read the metaquast summary for assemblers
+# Based on individual reference reports
 read_metaquast <- function(metaquast_file) {
   filename <- sub("^([^.]*).*", "\\1", basename(metaquast_file)) 
   metaquast <- as.data.frame(t(read.table(metaquast_file, 

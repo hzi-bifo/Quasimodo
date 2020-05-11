@@ -34,7 +34,7 @@ def config_generator(r1, r2, ref, outdir, insert, threads):
     <ReferenceSelector>
 		<Enabled>false</Enabled>
         <UseMajor>false</UseMajor>
-        <ReferenceMSA>{ref}</ReferenceMSA>
+        <ReferenceMSA></ReferenceMSA>
         <PathToUsearch>vsearch</PathToUsearch>
         <UclustIdentity>0.98</UclustIdentity>
         <MinReadLength>50</MinReadLength>

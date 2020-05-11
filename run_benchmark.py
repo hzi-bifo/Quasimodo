@@ -165,7 +165,7 @@ The files can be specified either in the CLI as argument or in the config file."
               "--refs",
               type=str,
               help="Comma-separated list of reference genome files. Please \
-quote the whole parameter if there is any white space the file names. \
+quote the whole parameter if there is any white space in the file names. \
 (The files can be specified either in the CLI as argument or in the config file.)")
 def asmeval(dryrun=False, threads=2, conda_prefix=None, **kwargs):
     #snpcall_smk = os.path.join(wd, "evaluate_snpcall_customize.smk")
