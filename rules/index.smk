@@ -11,5 +11,5 @@ rule build_idx:
         """
         samtools faidx {input.ref}
         bwa index {input.ref}
-        /home/zldeng/miniconda3/envs/variants/bin/rtg format {input.ref} -o {output.sdf}
+        rtg format {input.ref} -o {output.sdf}
         """

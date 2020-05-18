@@ -3,15 +3,9 @@ include: "rules/load_config.smk"
 
 assembly_dir = "/".join([project_dir, "results/assembly"])
 metaquast_dir = "/".join([project_dir, "results/metaquast"])
-# assemblers = ["spades", "metaspades", "tadpole", "abyss", 
-#               "megahit", "ray", "idba", "vicuna", "iva", "savage"]  # "haploflow", "pehaplo", "quasirecomb",
+assemblers = ["spades", "metaspades", "tadpole", "abyss", 
+              "megahit", "ray", "idba", "vicuna", "iva", "savage", "virgena"]  # "haploflow", "pehaplo", "quasirecomb",
 
-assemblers = ['virgena']
-
-v_samples_1 = ['TM-1-0', 'TA-1-1', 'TA-1-10', 'TA-1-0', 'TA-1-50', 'TM-1-1']
-v_samples_2 = ['TM-1-10', 'TA-0-1']
-v_samples_3 = ['TM-1-50']
-v_samples_4 = ['TM-0-1']
 
 metaquast_criteria = ["num_contigs", "Largest_contig", "Genome_fraction",
                       "Duplication_ratio", "Largest_alignment", "LGA50",
@@ -51,12 +45,12 @@ onsuccess:
 
 rule all:
     input:
-        # metaquast_report = expand(metaquast_dir + "/{strain_sample}/report.html",
-        #         strain_sample=make_mix()),
-        # all_sample_metaquast_table = results_dir + "/final_tables/all_sample_metaquast.tsv",
-        # figure = results_dir + "/final_figures/assembly_metaquast_evaluation.pdf"
-        expand("{assemblyDir}/{assembler}/{sample}/contigs.fasta",
-               assemblyDir=assembly_dir, sample=v_samples_1, assembler=assemblers),
+        metaquast_report = expand(metaquast_dir + "/{strain_sample}/report.html",
+                strain_sample=make_mix()),
+        all_sample_metaquast_table = results_dir + "/final_tables/all_sample_metaquast.tsv",
+        figure = results_dir + "/final_figures/assembly_metaquast_evaluation.pdf"
+        # expand("{assemblyDir}/{assembler}/{sample}/contig.done",
+        #        assemblyDir=assembly_dir, sample=sample_list, assembler=assemblers),
         
         # expand(metaquast_dir + "/summary_for_figure/{mix}.{criteria}.merged.tsv",
         #        mix=["TM", "TA"], criteria=metaquast_criteria),
@@ -98,12 +92,11 @@ rule metaquast:
     input:
         scaffolds = lambda wc: expand(assembly_dir + "/{assembler}/{{sample}}.{assembler}.scaffolds.fa",
                                       assembler=assemblers),
-        ref_fai = lambda wc: [tb_ref + ".fai", ad_ref + ".fai"] if
-        wc.mix == "TA" else [tb_ref + ".fai", merlin_ref + ".fai"]
+        ref_fai = lambda wc: [tb_ref + ".fai", ad_ref + ".fai"] if \
+            wc.mix == "TA" else [tb_ref + ".fai", merlin_ref + ".fai"]
     output:
-        report = metaquast_dir + "/{mix}/{sample, [A-Z]+-[0-9\-]+}/report.html",
+        reports = metaquast_dir + "/{mix}/{sample, [A-Z]+-[0-9\-]+}/report.html",
         tsv_report = metaquast_dir + "/{mix}/{sample, [A-Z]+-[0-9\-]+}/combined_reference/report.tsv"
-
     conda:
         "config/conda_env.yaml"
     threads: threads

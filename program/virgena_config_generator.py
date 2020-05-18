@@ -17,6 +17,7 @@ from os import path
 @click.argument("r2", type=click.Path(exists=True))
 @click.argument("ref", type=click.Path(exists=True))
 @click.argument("outdir", type=str)
+@click.argument("cd", type=click.Path(exists=True))
 @click.option('-l', '--insert', type=int, default=800, help='Insrtion length')
 @click.option('-t', '--threads', type=int, default=8, help='The number of threads')
 def config_generator(r1, r2, ref, outdir, insert, threads):
@@ -30,12 +31,12 @@ def config_generator(r1, r2, ref, outdir, insert, threads):
     <Reference>{ref}</Reference>
     <OutPath>{outdir}</OutPath>
     <ThreadNumber>{threads}</ThreadNumber>
-	<BatchSize>10000</BatchSize>
+	<BatchSize>1000</BatchSize>
     <ReferenceSelector>
 		<Enabled>false</Enabled>
         <UseMajor>false</UseMajor>
         <ReferenceMSA></ReferenceMSA>
-        <PathToUsearch>vsearch</PathToUsearch>
+        <PathToUsearch>{cd}/libs/virgena/tools/vsearch</PathToUsearch>
         <UclustIdentity>0.98</UclustIdentity>
         <MinReadLength>50</MinReadLength>
         <MinContigLength>1000</MinContigLength>
@@ -95,7 +96,7 @@ def config_generator(r1, r2, ref, outdir, insert, threads):
 		<MinFragmentCoverage>0.99</MinFragmentCoverage>
         <Debug>false</Debug>
     </Postprocessor>
-</config>'''.format(r1=r1, r2=r2, ref=ref, outdir=outdir, insert=insert, threads=threads)
+</config>'''.format(r1=r1, r2=r2, ref=ref, outdir=outdir, cd=cd, insert=insert, threads=threads)
 
     print(out_config)
 

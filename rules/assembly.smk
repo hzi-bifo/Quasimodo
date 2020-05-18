@@ -334,7 +334,7 @@ rule rename_savage:
 #     # mkdir -p {params.out_dir}
 #     shell:
 #         """
-#         export PATH=/usr/bin:{params.cd}/libs/PEHaplo/bin:/home/zldeng/miniconda3/envs/assembly/bin:/home/zldeng/miniconda3/bin:$PATH
+#         export PATH=/usr/bin:{params.cd}/libs/PEHaplo/bin:$PATH
         
 #         cd {params.out_dir}
 #         python2 {params.cd}/libs/PEHaplo/pehaplo.py -f1 {input.r1} -f2 {input.r2} \
@@ -351,17 +351,21 @@ rule virgena:
         r2 = os.path.abspath(r2),
         ref = ref_seq
     output:
-        contigs = assembly_dir + "/virgena/{sample}/contigs.fasta",
-        # scaffolds = assembly_dir + "/virgena/{sample}.virgena.scaffolds.fa"
+        done = assembly_dir + "/virgena/{sample}/contig.done",
+        scaffolds = assembly_dir + "/virgena/{sample}.virgena.scaffolds.fa",
     benchmark:
         report_dir + "/benchmarks/assembler/{sample}.virgena.benchmark.txt"
     priority: 72
     params:
-        out_dir = assembly_dir + "/virgena/{sample}"
+        cd = cd,
+        out_dir = assembly_dir + "/virgena/{sample}",
+        configs = assembly_dir + "/virgena/{sample}assembly.fasta"
     threads: 24
     shell:
         """
         python program/virgena_config_generator.py {input.r1} {input.r2} {input.ref[0]} {params.out_dir} \
-            -t {threads} > {params.out_dir}/config.xml
+            {params.cd} -t {threads} > {params.out_dir}/config.xml
         java -jar libs/virgena/VirGenA.jar assemble -c {params.out_dir}/config.xml
+        mv {params.configs} {output.scaffolds}
+        touch {output.done}
         """

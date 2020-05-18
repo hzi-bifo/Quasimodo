@@ -29,7 +29,8 @@ assembler_map <- list(
   tadpole = "tadpole", abyss = "ABySS",
   megahit = "megahit", ray = "Ray",
   idba = "IDBA", vicuna = "Vicuna",
-  iva = "IVA", savage = "Savage"
+  iva = "IVA", savage = "Savage",
+  virgena = "VirGenA"
 )
 
 header <- c(
@@ -110,5 +111,5 @@ g <- ggplot(resource_use_df.long, aes(assembler, value)) +
     ylab("") +
     scale_y_log10()
 
-ggsave(paste0(opt$out, ".pdf"), plot = g, width = 8, height = 7)
+ggsave(paste0(opt$out, ".pdf"), plot = g, width = 9, height = 7)
 # ggsave("assembler.resource.use.log.nocolor.png", plot = g, width = 8, height = 7)

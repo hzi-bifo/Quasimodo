@@ -16,7 +16,8 @@ assembler_map <- list(
   tadpole = "tadpole", abyss = "ABySS",
   megahit = "megahit", ray = "Ray",
   idba = "IDBA", vicuna = "Vicuna",
-  iva = "IVA", savage = "Savage"
+  iva = "IVA", savage = "Savage",
+  virgena = "VirGenA"
 )
 
 
@@ -25,8 +26,8 @@ read_metaquast <- function(file_name, dir = input_dir) {
 
   metaquast <- read.table(file, sep = "\t", header = T, na.strings = "-", check.names = F) %>%
     separate(Assemblies, c("sample", "assembler"), sep = "\\.")
-  ref1 <- 'TB40E'
-  ref2 <- ifelse(startsWith(basename(file_name), 'TA'), 'AD169', 'Merlin')
+  ref1 <- "TB40E"
+  ref2 <- ifelse(startsWith(basename(file_name), "TA"), "AD169", "Merlin")
 
   # ref1 <- 3
   # ref2 <- 4
@@ -119,15 +120,21 @@ get_portion <- function(sample_summary) {
   )
 }
 
+
+metaquast_all_criteria_portion <- metaquast_all_criteria %>%
+  get_portion()
+
+
 color_dot_boxplot <- function(df, value, label) {
-  g <- ggplot(get_portion(df), aes_string("assembler", value)) +
-    geom_boxplot(show.legend = F, fill = "grey85") +
+  g <- ggplot(df, aes_string("assembler", value)) +
+    geom_boxplot(show.legend = F, fill = "grey85", outlier.shape = NA) +
     geom_point(
       position = position_jitterdodge(
         jitter.width = 0,
         dodge.width = 0.3,
         seed = 1234
       ),
+      na.rm = TRUE,
       aes(color = ratio),
       stroke = 0,
       size = 2
@@ -135,14 +142,14 @@ color_dot_boxplot <- function(df, value, label) {
     xlab("") +
     theme_bw(base_size = 15) +
     ylab(label) +
-    scale_color_brewer(palette = "Set1")
+    scale_color_brewer(palette = "Set2")
   return(g)
 }
 
 ## Number of contigs visualization
 p_c_box <- color_dot_boxplot(
   filter(
-    metaquast_all_criteria,
+    metaquast_all_criteria_portion,
     criteria == "num_contigs"
   ),
   "value",
@@ -154,7 +161,7 @@ p_c_box <- color_dot_boxplot(
 ## Only legend for all figures
 p_c_box_legend <- color_dot_boxplot(
   filter(
-    metaquast_all_criteria,
+    metaquast_all_criteria_portion,
     criteria == "num_contigs"
   ),
   "value",
@@ -166,7 +173,7 @@ p_c_box_legend <- color_dot_boxplot(
 ## Genome fraction visualization
 p_gf_box <- color_dot_boxplot(
   filter(
-    metaquast_all_criteria,
+    metaquast_all_criteria_portion,
     criteria == "Genome_fraction"
   ),
   "value",
@@ -180,7 +187,7 @@ p_gf_box <- color_dot_boxplot(
 ## Duplication ratio visualization
 p_dr_box <- color_dot_boxplot(
   filter(
-    metaquast_all_criteria,
+    metaquast_all_criteria_portion,
     criteria == "Duplication_ratio"
   ),
   "value",
@@ -192,7 +199,7 @@ p_dr_box <- color_dot_boxplot(
 ## Largest alignment visualization
 p_la_box <- color_dot_boxplot(
   filter(
-    metaquast_all_criteria,
+    metaquast_all_criteria_portion,
     criteria == "Largest_alignment"
   ),
   "value / 1000",
@@ -221,7 +228,7 @@ p_la_box <- color_dot_boxplot(
 ## NGA50 visualization
 p_nga50_box <- color_dot_boxplot(
   filter(
-    metaquast_all_criteria,
+    metaquast_all_criteria_portion,
     criteria == "NGA50"
   ),
   "value / 1000",
@@ -242,7 +249,7 @@ p_nga50_box <- color_dot_boxplot(
 ## Number of mismatches per 100kbp visualization
 p_mism_box <- color_dot_boxplot(
   filter(
-    metaquast_all_criteria,
+    metaquast_all_criteria_portion,
     criteria == "num_mismatches_per_100_kbp"
   ),
   "value",
@@ -263,7 +270,7 @@ p6 <- plot_grid(p_c_box, p_la_box, p_gf_box, p_dr_box,
 
 assembly_evaluation_plot6 <- plot_grid(p6, legend, rel_widths = c(3, 0.5))
 
-ggsave(filename = output_figure, plot = assembly_evaluation_plot6, width = 13, height = 8)
+ggsave(filename = output_figure, plot = assembly_evaluation_plot6, width = 14, height = 8)
 
 filter(metaquast_all_criteria, criteria == "NGA50") %>%
   select(criteria, sample, assembler, value) %>%
