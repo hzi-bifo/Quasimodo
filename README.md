@@ -300,3 +300,5 @@ python3 run_benchmark.py snpeval -t 10 -c ~/miniconda3/envs \
         -r "<comma-separated list of reference genomes>" \
         -o <output directory>
 ```
+### Citation
+- Deng ZL, Dhingra A, Fritz A, Götting J, Münch PC, Steinbrück L, Schulz T, Ganzenmueller T, McHardy AC. Evaluating assembly and variant calling software for strain-resolved analysis of large DNA-viruses. Briefings in Bioinformatics. 2020
