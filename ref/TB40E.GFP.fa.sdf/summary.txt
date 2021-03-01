@@ -1,0 +1,18 @@
+
+Input Data
+Files              : TB40E.GFP.fa
+Format             : FASTA
+Type               : DNA
+Number of sequences: 1
+Total residues     : 237928
+Minimum length     : 237928
+Mean length        : 237928
+Maximum length     : 237928
+
+Output Data
+SDF-ID             : ef0e706a-f67a-4f41-b72f-f1105deb7e2a
+Number of sequences: 1
+Total residues     : 237928
+Minimum length     : 237928
+Mean length        : 237928
+Maximum length     : 237928

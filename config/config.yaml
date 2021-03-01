@@ -3,6 +3,9 @@ MerlinRef: ref/Merlin.BAC.fa
 TB40ERef: ref/TB40E.GFP.fa
 AD169Ref: ref/AD169.BAC.fa
 PhixRef: ref/Phix.fa
-outpath: ../fastmode_output_final
-threads: 2
+outpath: ../revision_output_5
+threads: 24
 runOnReads: false
+rmHumanEcoli: true
+HumanRefBWAIdx: /net/sgi/viral_genomics/MHH/human_genome/hg19.genome.bwa
+EcoliRefBWAIdx: ref/Ecoli.NC_000913.fa

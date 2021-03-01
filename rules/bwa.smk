@@ -15,4 +15,5 @@ rule bwa:
         bwa mem -k 31 -t {threads} {input.ref[0]} {input.r1} {input.r2} |\
             samtools view -Shb - 2>> {log} |\
             samtools sort -@ {threads} -m 10G - -o {output.sortedbam} >> {log} 2>&1
+        samtools index {output.sortedbam}
         """

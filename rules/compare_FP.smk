@@ -2,8 +2,8 @@ fp_compared_snpcallers = ["lofreq", "clc", "varscan", "freebayes"]
 
 rule compareFP:
     input:
-        fp = expand(snpcall_dir + "/{snpcallers}/fp/{sample_ref}.{snpcallers}.fp.vcf",
-                    snpcallers=snpcallers,
+        fp = expand(snpcall_dir + "/{snpcaller}/fp/{sample_ref}.{snpcaller}.fp.vcf",
+                    snpcaller=snpcallers,
                     sample_ref=['{}.{}'.format(sample, sample_refname_dict[sample])
                                 for sample in sample_list if not sample.endswith(("-1-0", "-0-1"))])
     output:

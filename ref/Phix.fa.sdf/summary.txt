@@ -1,0 +1,18 @@
+
+Input Data
+Files              : Phix.fa
+Format             : FASTA
+Type               : DNA
+Number of sequences: 1
+Total residues     : 5386
+Minimum length     : 5386
+Mean length        : 5386
+Maximum length     : 5386
+
+Output Data
+SDF-ID             : 66923c99-bbde-40d0-bf5d-a453b10a7c39
+Number of sequences: 1
+Total residues     : 5386
+Minimum length     : 5386
+Mean length        : 5386
+Maximum length     : 5386
