@@ -226,7 +226,7 @@ You can specify the parameters and files in `config/customize_data.yaml`:
 ```yaml
 vcfs: ## comma-separated a flist of VCF files to evaluate
 scaffolds: ## comma-separated a list of contig/scaffold fasta files to evaluate
-refs: ## comma-separated list of reference genomes
+refs: ## comma-separated list of reference genomes; the first given ref should be the ref used to generate the VCFs
 outpath: ../custom_benchmark_out/
 threads: 2
 ```
@@ -289,9 +289,10 @@ Options:
                            the CLI as argument or in the config file.
   -r, --refs TEXT          Comma-separated list of reference genome files.
                            Please quote the whole parameter if there is any
-                           white space the file names. The files can be
-                           specified either in the CLI as argument or in the
-                           config file.
+                           white space the file names. The first given ref 
+			   should be the ref used to generate the VCFs. The 
+			   files can be specified either in the CLI as argument 
+			   or in the config file.
   --help                   Show this message and exit.
 ```
 
