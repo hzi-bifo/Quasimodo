@@ -12,7 +12,11 @@ venn_snpcallers <- unlist(snakemake@params$snp_venn)
 genome_diff_file <- snakemake@input$genome_diff
 
 ## Make a list for the genome difference
+info <- file.info(genome_diff_file)
 
+if (info$size == 0){
+    stop("No difference between two genomes!")
+}
 
 genome_diff_table <- read.table(genome_diff_file, sep="\t", comment.char="#", header=F,
                                 colClasses=c(rep("character", 3), rep("NULL", 9)))
