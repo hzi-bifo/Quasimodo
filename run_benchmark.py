@@ -180,15 +180,15 @@ def asmeval(dryrun=False, threads=2, conda_prefix=None, **kwargs):
 def run_snake(snake, dryrun=False, conda_prefix=None, **kwargs):
     try:
         # Unlock the working directory
-        unlocked = snakemake.snakemake(
-            snakefile=snake,
-            # unlock=False,
-            unlock=True,
-            workdir=wd,
-            config=kwargs
-        )
-        if not unlocked:
-            raise Exception('Could not unlock the working directory!')
+#         unlocked = snakemake.snakemake(
+#             snakefile=snake,
+#             # unlock=False,
+#             unlock=True,
+#             workdir=wd,
+#             config=kwargs
+#         )
+#         if not unlocked:
+#             raise Exception('Could not unlock the working directory!')
 
         # Start the snakemake pipeline
         success = snakemake.snakemake(
