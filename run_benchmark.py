@@ -193,7 +193,7 @@ def run_snake(snake, dryrun=False, conda_prefix=None, **kwargs):
         # Start the snakemake pipeline
         success = snakemake.snakemake(
             snakefile=snake,
-            restart_times=3,
+            restart_times=1,
             cores=kwargs.get("threads", 2),
             workdir=wd,
             use_conda=True,
