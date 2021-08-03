@@ -7,7 +7,7 @@ In this benchmarking study: variants callers `BCFtools` (v1.9), `VarScan` (v2.4.
 
 ### Prerequirements
 
-To reproduce the output, you need to use `Bioconda`.
+To reproduce the output, you need to use `Bioconda` with `Miniconda3` or `Anaconda3` (`Python` v3.7 was tested). Note `Miniconda2` and `Anaconda2` are not compatible with `Snakemake`. 
 
 Please follow the instruction [here](https://bioconda.github.io) to install `Bioconda`. And then you need to install `snakemake`, `csvtk` and Python package `click`:
 
