@@ -9,7 +9,6 @@ mix_vcf <- snakemake@input$vcfs
 callers <- unlist(snakemake@params$callers)
 
 novenn <- snakemake@params$novenn
-print(novenn)
 
 ## The genome difference by NUCmer
 genome_diff_file <- snakemake@input$genome_diff
