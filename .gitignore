@@ -22,3 +22,6 @@ libs/PredictHaplo
 libs/vicuna.zip
 *.bak
 *.old
+sequences.txt
+savage_hiv.smk
+fastp.json

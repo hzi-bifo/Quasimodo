@@ -2,4 +2,6 @@ outpath: ../HCMV_bench_TM11_out # Please use different path for different input
 vcfs: ../HCMV_benchmark_output/results/snp/callers/lofreq/TA-1-1.AD169.lofreq.vcf,../HCMV_benchmark_output/results/snp/callers/varscan/TA-1-1.AD169.varscan.vcf,../HCMV_benchmark_output/results/snp/callers/bcftools/TA-1-1.AD169.bcftools.vcf
 scaffolds: data/assembly/abyss/TM-1-1.abyss.scaffolds.fa,data/assembly/idba/TM-1-1.idba.scaffolds.fa,data/assembly/megahit/TM-1-1.megahit.scaffolds.fa,data/assembly/metaspades/TM-1-1.metaspades.scaffolds.fa,data/assembly/ray/TM-1-1.ray.scaffolds.fa,data/assembly/savage/TM-1-1.savage.scaffolds.fa,data/assembly/spades/TM-1-1.spades.scaffolds.fa,data/assembly/tadpole/TM-1-1.tadpole.scaffolds.fa
 refs: ref/Merlin.BAC.fa,ref/TB40E.GFP.fa
+labels:
+novenn: false
 threads: 6

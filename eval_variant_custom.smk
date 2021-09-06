@@ -12,19 +12,23 @@ g1_name, g2_name = (os.path.splitext(os.path.basename(ref))[0] for ref in refs)
 
 gdiff_name = g1_name + "_" + g2_name
 
-snpcallers = [os.path.splitext(os.path.basename(vcf))[0] for vcf in vcfs]
+labels = config['labels']
+novenn = config['novenn']
+callers = [os.path.splitext(os.path.basename(vcf))[0] for vcf in vcfs] if labels is None else [label for label in labels.split(',')]
 
+caller_vcf_dict = dict(zip(callers, vcfs))
 
-def get_vcf(wc):
-    for vcf_file in vcfs:
-        if vcf_file.endswith(wc.snpcaller + ".vcf"):
-            return vcf_file
+# def get_vcf(wc):
+#     return caller_vcf_dict[wc.snpcaller]
+    # for vcf_file in vcfs:
+    #     if vcf_file.endswith(wc.snpcaller + ".vcf"):
+    #         return vcf_file
 
 
 rule all:
     input:
         snp_benchmark_figure = results_dir + "/final_figures/snpcall_benchmark.pdf",
-        snp_venn_figure = results_dir + "/final_figures/snpcall_venn.pdf",
+        # snp_venn_figure = results_dir + "/final_figures/snpcall_venn.pdf",
         snp_benchmark_table = results_dir + "/final_tables/snpcall_benchmark.txt"
 
 # The first given ref should be the ref used to generate the VCFs
@@ -46,7 +50,7 @@ rule gdiff:
 
 rule extract_TP:
     input:
-        vcf = get_vcf,
+        vcf = lambda wc: caller_vcf_dict[wc.snpcaller],
         genome_diff = rules.gdiff.output.snps
     output:
         filtered = snpcall_dir + "/{snpcaller}.filtered.vcf",
@@ -59,19 +63,22 @@ rule extract_TP:
     threads: threads
     shell:
         """
-        python program/extract_TP_FP_SNPs.py {input.vcf} {input.genome_diff} {params.data} {params.outdir}
+        python program/extract_TP_FP_SNPs.py {input.vcf} {input.genome_diff} {params.data} {params.outdir} {wildcards.snpcaller}
         """
 
 rule snp_benchmark:
     input:
         vcfs = expand(snpcall_dir + "/{snpcaller}.filtered.vcf",
-                      snpcaller=snpcallers),
+                      snpcaller=callers),
         genome_diff = rules.gdiff.output.snps
     output:
         snp_benchmark_table = results_dir + "/final_tables/snpcall_benchmark.txt",
-        snp_benchmark_figure = results_dir + "/final_figures/snpcall_benchmark.pdf",
+        snp_benchmark_figure = results_dir + "/final_figures/snpcall_benchmark.pdf"
+        
+    params: 
+        callers = callers,
+        novenn = novenn,
         snp_venn_figure = results_dir + "/final_figures/snpcall_venn.pdf"
-    params: snpcallers = snpcallers
     conda:
         "config/conda_env.yaml"
     script:

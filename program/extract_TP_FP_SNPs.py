@@ -57,7 +57,7 @@ def extract_tp_fp_snp(vcf_file, snp_file):
         fp.communicate()
 
 
-def extract_tp_fp_custom_snp(vcf_file, snp_file, outdir):
+def extract_tp_fp_custom_snp(vcf_file, snp_file, outdir, caller):
     """ Extract the TP SNPs from the VCF file of caller
     @param vcf_file: The input VCF file for extracting the true positive (TP) and false positive (FP) SNPS.
     @param snp_file: The SNPs between two reference genomes due to sequence differences.
@@ -66,9 +66,10 @@ def extract_tp_fp_custom_snp(vcf_file, snp_file, outdir):
     @param outdir: the output directory for filtered and TP, FP SNP VCF files
     """
     #dirname = os.path.dirname(vcf_file)
-    fname_wo_ext = os.path.basename(vcf_file)[:-4]
-    filtered_out = os.path.join(outdir, fname_wo_ext + ".filtered.vcf")
-    fp_out = os.path.join(outdir, "fp", fname_wo_ext + ".fp.vcf")
+    # fname_wo_ext = os.path.basename(vcf_file)[:-4]
+
+    filtered_out = os.path.join(outdir, caller + ".filtered.vcf")
+    fp_out = os.path.join(outdir, "fp", caller + ".fp.vcf")
 
     snp_by_caller = r'''awk -F"\t" '$4~/^[ACGT]$/&&$5~/^[ACGT]$/&&($6>=20||$6==".")' {}'''.format(
         vcf_file)
@@ -87,7 +88,7 @@ def extract_tp_fp_custom_snp(vcf_file, snp_file, outdir):
     else:
         if not os.path.exists(os.path.join(outdir, "tp")):
             os.makedirs(os.path.join(outdir, "tp"))
-        tp_out = os.path.join(outdir, "tp", fname_wo_ext + ".tp.vcf")
+        tp_out = os.path.join(outdir, "tp", caller + ".tp.vcf")
         # genome_snp = r'''awk -F"\t" '$2!="."&&$3!="."{{print $1, ".", $2, $3}}' OFS="\t" {}'''.format(
         #     snp_file)
 
@@ -129,8 +130,11 @@ if __name__ == "__main__":
                         help="the source of input data")
     parser.add_argument("outdir", type=str,
                         help="the output dir")
+    parser.add_argument("caller", type=str,
+                        help="the label of the caller")
     args = parser.parse_args()
     if args.data == "hcmv":
         extract_tp_fp_snp(args.vcffile, args.snpfile)
     else:
-        extract_tp_fp_custom_snp(args.vcffile, args.snpfile, args.outdir)
+        extract_tp_fp_custom_snp(
+            args.vcffile, args.snpfile, args.outdir, args.caller)

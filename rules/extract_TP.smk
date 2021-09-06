@@ -17,5 +17,5 @@ rule extractTP:
     threads: threads
     shell:
         """
-        python program/extract_TP_FP_SNPs.py {input.vcf} {input.genome_diff} {params.data} {params.outdir}
+        python program/extract_TP_FP_SNPs.py {input.vcf} {input.genome_diff} {params.data} {params.outdir} {wildcards.snpcaller}
         """

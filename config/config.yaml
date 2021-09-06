@@ -3,7 +3,7 @@ MerlinRef: ref/Merlin.BAC.fa
 TB40ERef: ref/TB40E.GFP.fa
 AD169Ref: ref/AD169.BAC.fa
 PhixRef: ref/Phix.fa
-outpath: ../revision_output_5
+outpath: ../revision_output_1
 threads: 24
 runOnReads: false
 rmHumanEcoli: true

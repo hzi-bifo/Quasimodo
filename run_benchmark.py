@@ -15,7 +15,7 @@ import functools
 import snakemake
 
 wd = os.path.dirname(os.path.realpath(__file__))
-VERSION = '0.3'
+VERSION = '0.4'
 
 
 class SpecialHelpOrder(click.Group):
@@ -138,17 +138,22 @@ def hcmv(evaluation, dryrun=False, conda_prefix=None, slow=False, **kwargs):
               help="Comma-separated list of VCF files. Please quote the whole \
 parameter if there is any white space the file names. The files can be \
 specified either in the CLI as argument or in the config file.")
+@click.option("-l", "--labels", help="Comma-separated list of labels of VCF.", default=None)
 @click.option("-r",
               "--refs",
               type=str,
               help="Comma-separated list of reference genome files. Please \
 quote the whole parameter if there is any white space the file names. \
 (The files can be specified either in the CLI as argument or in the config file.)")
+@click.option("--novenn", is_flag=True, help="Do not visualize the SNPs in Venn diagram")
 def vareval(dryrun=False, conda_prefix=None, **kwargs):
     variantcall_smk = os.path.join(wd, "eval_variant_custom.smk")
     snake_kwargs = {}
     for arg, val in kwargs.items():
         if val != None:
+            if arg == 'refs' or arg == 'vcfs':
+                val = ','.join([os.path.join(os. getcwd(), item.strip())
+                                for item in val.split(',')])
             snake_kwargs[arg] = val
     run_snake(variantcall_smk, dryrun, conda_prefix, **snake_kwargs)
 
@@ -180,20 +185,20 @@ def asmeval(dryrun=False, threads=2, conda_prefix=None, **kwargs):
 def run_snake(snake, dryrun=False, conda_prefix=None, **kwargs):
     try:
         # Unlock the working directory
-        unlocked = snakemake.snakemake(
-            snakefile=snake,
-            # unlock=False,
-            unlock=True,
-            workdir=wd,
-            config=kwargs
-        )
-        if not unlocked:
-            raise Exception('Could not unlock the working directory!')
+        # unlocked = snakemake.snakemake(
+        #    snakefile=snake,
+        #    # unlock=False,
+        #    unlock=True,
+        #    workdir=wd,
+        #    config=kwargs
+        # )
+        # if not unlocked:
+        #    raise Exception('Could not unlock the working directory!')
 
         # Start the snakemake pipeline
         success = snakemake.snakemake(
             snakefile=snake,
-            restart_times=3,
+            restart_times=0,
             cores=kwargs.get("threads", 2),
             workdir=wd,
             use_conda=True,

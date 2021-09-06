@@ -6,13 +6,20 @@ library(gridExtra)
 mix_vcf <- snakemake@input$vcfs
 
 ## SNP callers to compare using Venndigram
-venn_snpcallers <- unlist(snakemake@params$snp_venn)
+callers <- unlist(snakemake@params$callers)
+
+novenn <- snakemake@params$novenn
+print(novenn)
 
 ## The genome difference by NUCmer
 genome_diff_file <- snakemake@input$genome_diff
 
 ## Make a list for the genome difference
+info <- file.info(genome_diff_file)
 
+if (info$size == 0){
+    stop("No difference between two genomes!")
+}
 
 genome_diff_table <- read.table(genome_diff_file, sep="\t", comment.char="#", header=F,
                                 colClasses=c(rep("character", 3), rep("NULL", 9)))
@@ -31,8 +38,11 @@ snpcaller_performance_names <- colnames(snpcaller_performance_summary)
 snp_list = list()
 snp_list[["Genome"]] = genome_diff_vector
 
-for (file in mix_vcf){
-    snpcaller <- gsub('\\.filtered\\.vcf$', '', basename(file), ignore.case=TRUE)
+# for (file in mix_vcf){
+for (i in 1:length(mix_vcf)){
+    file <- mix_vcf[i]
+    snpcaller <- callers[i]
+    #snpcaller <- gsub('\\.filtered\\.vcf$', '', basename(file), ignore.case=TRUE)
     genome_diff_count <- length(genome_diff_vector)
 
     snp_table <- tryCatch({
@@ -93,21 +103,27 @@ point_plot <- ggplot(snpcaller_performance_summary, aes(precision, recall, color
         text = element_text(size=14)) +
     theme_bw(base_size=15) 
 
-
-futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
-# Venndiagram
-venn <- venn.diagram(x=snp_list,
-        filename = NULL,
-        col="transparent",
-        fill=c("blueviolet","#dc143c","dodgerblue1", "green3"),
-        alpha = 0.60, 
-        fontfamily = "sans",
-        cat.fontfamily = "sans",
-        main.fontfamily = "sans",
-        cex=1.2, 
-        main.cex = 1.3,
-        cat.cex=1.2
-)
-
 ggsave(file=snakemake@output$snp_benchmark_figure, plot=point_plot, width=8, height=6)
-ggsave(file=snakemake@output$snp_venn_figure, plot=grobTree(venn), width=6, height=6)
+
+if (!novenn){
+
+    futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
+    # Venndiagram
+
+    num_elements = length(snp_list)
+
+    venn <- venn.diagram(x=snp_list,
+            filename = NULL,
+            col="transparent",
+            fill=c("blueviolet","#dc143c","dodgerblue1", "green3", "#CEFFCF")[1:num_elements],
+            alpha = 0.60, 
+            fontfamily = "sans",
+            cat.fontfamily = "sans",
+            main.fontfamily = "sans",
+            cex=1.2, 
+            main.cex = 1.3,
+            cat.cex=1.2
+    )
+    ggsave(file=snakemake@params$snp_venn_figure, plot=grobTree(venn), width=6, height=6)
+}
+
