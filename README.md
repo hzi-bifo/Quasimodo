@@ -1,4 +1,8 @@
-## QuasiModo - Quasispecies Metric Determination on Omics
+## QuasiModo - Quasispecies Metric Determination on Omics    
+
+ [![check in Biotreasury](https://img.shields.io/badge/Biotreasury-collected-brightgreen)](https://biotreasury.rjmart.cn/#/tool?id=20920)
+ 
+ 
 > #### Strain-level assembly and variant calling benchmarking based on sequencing data of mixed strain samples for HCMV
 
 This repository contains the scripts and pipeline that reproduces the results of the HCMV benchmarking study. In this study we evaluated genome assemblers and variant callers on 10 in vitro generated, mixed strain HCMV sequence samples, each consisting of two lab strains in different abundance ratios. This tool can also be used to evaluate assemblies and variant calling results on other similar datasets.
