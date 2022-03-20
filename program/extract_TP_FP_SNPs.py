@@ -89,11 +89,11 @@ def extract_tp_fp_custom_snp(vcf_file, snp_file, outdir, caller):
         if not os.path.exists(os.path.join(outdir, "tp")):
             os.makedirs(os.path.join(outdir, "tp"))
         tp_out = os.path.join(outdir, "tp", caller + ".tp.vcf")
-        # genome_snp = r'''awk -F"\t" '$2!="."&&$3!="."{{print $1, ".", $2, $3}}' OFS="\t" {}'''.format(
-        #     snp_file)
-
-        genome_snp = r'''awk -F"\t" '$4~/^[ACGT]$/&&$5~/^[ACGT]$/{{print $2, ".", $4, $5}}' OFS="\t" {}'''.format(
+        genome_snp = r'''awk -F"\t" '$2!="."&&$3!="."{{print $1, ".", $2, $3}}' OFS="\t" {}'''.format(
             snp_file)
+
+        # genome_snp = r'''awk -F"\t" '$4~/^[ACGT]$/&&$5~/^[ACGT]$/{{print $2, ".", $4, $5}}' OFS="\t" {}'''.format(
+        #     snp_file)
 
         tp_cmd = r'''(grep -E "^#" {};fgrep -wf <({}) <({})) > {}'''.format(vcf_file,
                                                                             genome_snp, snp_by_caller, tp_out)

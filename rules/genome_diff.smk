@@ -19,7 +19,6 @@ rule nucmer:
         """
         nucmer --prefix={params.genome_diff_prefix} {input.ref} {input.qry}
         
-        
         show-snps -CTHlr <(delta-filter -r -q {output.delta}) > {output.mask_repeat_variants}
         python3 program/mummer2vcf.py -s {output.mask_repeat_variants} --output-header -n -g {input.ref} > \
             {output.variants_vcf}

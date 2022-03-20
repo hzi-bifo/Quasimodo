@@ -38,6 +38,9 @@ rule gdiff:
     output:
         delta = snp_dir + "/nucmer/" + gdiff_name + ".delta",
         snps = snp_dir + "/nucmer/" + gdiff_name + ".maskrepeat.snps"
+        # mask_repeat_variants = snp_dir + "/nucmer/" + gdiff_name + ".maskrepeat.variants",
+        # variants_vcf = snp_dir + "/nucmer/" + gdiff_name + ".maskrepeat.variants.vcf",
+        # variants_vcf_bgz = snp_dir + "/nucmer/" + gdiff_name + ".maskrepeat.variants.vcf.gz"
     conda:
         "config/conda_env.yaml"
     params:
@@ -45,8 +48,12 @@ rule gdiff:
     shell:
         """
         nucmer --prefix={params.genome_diff_prefix} {input}
-        show-snps -CTIHlr <(delta-filter -r -q {output.delta}) > {output.snps}
+        show-snps -CTHIlr <(delta-filter -r -q {output.delta}) > {output.snps}
         """
+        # python3 program/mummer2vcf.py -s {output.mask_repeat_variants} --output-header -n -g {input[0]} > \
+        #     {output.variants_vcf}
+        # bgzip -c {output.variants_vcf} > {output.variants_vcf_bgz}
+        # tabix -p vcf {output.variants_vcf_bgz}
 
 rule extract_TP:
     input:

@@ -7,7 +7,6 @@ class PathNotGiven(RuntimeError):
     def __init__(self, message):
         self.message = message
 
-
 try:
     refs = list(map(str.strip, config["refs"].split(",")))
     project_dir = config["outpath"].rstrip("/")
@@ -17,4 +16,4 @@ except AttributeError as e:
         "The reference genome files or output directory are not specified.")
 
 threads = config["threads"]
-results_dir = project_dir + "/results"
+results_dir = os.path.join(project_dir, "results")
