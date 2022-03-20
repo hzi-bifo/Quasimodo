@@ -1,9 +1,14 @@
-## QuasiModo - Quasispecies Metric Determination on Omics
+## QuasiModo - Quasispecies Metric Determination on Omics    
+
+ [![check in Biotreasury](https://img.shields.io/badge/Biotreasury-collected-brightgreen)](https://biotreasury.rjmart.cn/#/tool?id=20920)
+ 
+ 
 > #### Strain-level assembly and variant calling benchmarking based on sequencing data of mixed strain samples for HCMV
 
 This repository contains the scripts and pipeline that reproduces the results of the HCMV benchmarking study. In this study we evaluated genome assemblers and variant callers on 10 in vitro generated, mixed strain HCMV sequence samples, each consisting of two lab strains in different abundance ratios. This tool can also be used to evaluate assemblies and variant calling results on other similar datasets.
 
 In this benchmarking study: variants callers `BCFtools` (v1.9), `VarScan` (v2.4.3), `Freebayes` (v1.2.0), `LoFreq` (v2.1.3.1), `CLC Genomics Workbench` (v11.0.1) were evaluated. For the assembly benchmarking, `ABySS` (v2.1.4), `megahit` (v1.1.3) , `IDBA` (v1.1.3), `SPAdes` (v3.12.0), `Ray` (v2.3.1), `Tadpole` (v37.99) were assessed. The haplotype reconstruction program `Savage` (v0.4.0) was also evaluated. 
+
 
 ### Prerequirements
 
@@ -64,7 +69,6 @@ outpath: <your output path> # the directory for outputs
 threads: 2 # number of cores to use
 runOnReads: false # Run the whole analyses on reads. Controlled by the `--slow` option
 ```
-
 
 ### Run the benchmarking
 
@@ -302,3 +306,6 @@ python3 run_benchmark.py vareval -t 10 -c ~/miniconda3/envs \
         -r "<comma-separated list of reference genomes>" \
         -o <output directory>
 ```
+
+### Citation
+Deng ZL, Dhingra A, Fritz A, Götting J, Münch PC, Steinbrück L, Schulz T, Ganzenmueller T, McHardy AC. Evaluating assembly and variant calling software for strain-resolved analysis of large DNA-viruses. Briefings in Bioinformatics. 2020:7. https://doi.org/10.1093/bib/bbaa123
