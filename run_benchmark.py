@@ -15,8 +15,10 @@ import functools
 import snakemake
 
 wd = os.path.dirname(os.path.realpath(__file__))
-VERSION = '0.4'
+VERSION = '0.4.2'
 
+# get the current directory 
+cd = os.getcwd()
 
 class SpecialHelpOrder(click.Group):
 
@@ -119,6 +121,8 @@ def hcmv(evaluation, dryrun=False, conda_prefix=None, slow=False, **kwargs):
     snake_kwargs = dict(runOnReads=slow)
     for arg, val in kwargs.items():
         if val != None:
+            if arg == 'outpath':
+                val = os.path.join(cd, val)
             snake_kwargs[arg] = val
     if evaluation == "variantcall":
         snakes = [variantcall_smk]
@@ -152,8 +156,12 @@ def vareval(dryrun=False, conda_prefix=None, **kwargs):
     for arg, val in kwargs.items():
         if val != None:
             if arg == 'refs' or arg == 'vcfs':
-                val = ','.join([os.path.join(os. getcwd(), item.strip())
+                val = ','.join([os.path.join(cd, item.strip())
                                 for item in val.split(',')])
+            elif arg == 'outpath':
+                val = os.path.join(cd, val)
+            else:
+                continue
             snake_kwargs[arg] = val
     run_snake(variantcall_smk, dryrun, conda_prefix, **snake_kwargs)
 
@@ -178,6 +186,8 @@ def asmeval(dryrun=False, threads=2, conda_prefix=None, **kwargs):
     snake_kwargs = {}
     for arg, val in kwargs.items():
         if val != None:
+            if arg == 'outpath':
+                val = os.path.join(cd, val)
             snake_kwargs[arg] = val
     run_snake(assembly_smk, dryrun, conda_prefix, **snake_kwargs)
 
