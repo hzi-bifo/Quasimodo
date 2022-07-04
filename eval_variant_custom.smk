@@ -14,6 +14,7 @@ gdiff_name = g1_name + "_" + g2_name
 
 labels = config['labels']
 novenn = config['novenn']
+
 callers = [os.path.splitext(os.path.basename(vcf))[0] for vcf in vcfs] if labels is None else [label for label in labels.split(',')]
 
 caller_vcf_dict = dict(zip(callers, vcfs))

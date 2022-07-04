@@ -8,6 +8,7 @@ Author: ZL Deng <dawnmsg(at)gmail.com>
 Last Modified: 29th July 2019 12:03:45 pm
 '''
 
+from email.policy import default
 import os
 import sys
 import click
@@ -15,7 +16,7 @@ import functools
 import snakemake
 
 wd = os.path.dirname(os.path.realpath(__file__))
-VERSION = '0.4.2'
+VERSION = '0.5.0-dev'
 
 # get the current directory 
 cd = os.getcwd()
@@ -149,9 +150,15 @@ specified either in the CLI as argument or in the config file.")
               help="Comma-separated list of reference genome files. Please \
 quote the whole parameter if there is any white space the file names. \
 (The files can be specified either in the CLI as argument or in the config file.)")
-@click.option("--novenn", is_flag=True, help="Do not visualize the SNPs in Venn diagram")
+@click.option("--ratio", 
+              type=str, 
+              help="Mixture ratio of each genome, e.g. 1:1:1", 
+              default=None)
+@click.option("--novenn", 
+              is_flag=True, 
+              help="Do not visualize the SNPs in Venn diagram")
 def vareval(dryrun=False, conda_prefix=None, **kwargs):
-    variantcall_smk = os.path.join(wd, "eval_variant_custom.smk")
+    variantcall_smk = os.path.join(wd, "eval_variant_custom_morestrain.smk")
     snake_kwargs = {}
     for arg, val in kwargs.items():
         if val != None:

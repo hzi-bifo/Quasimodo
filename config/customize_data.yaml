@@ -4,4 +4,5 @@ scaffolds: data/assembly/abyss/TM-1-1.abyss.scaffolds.fa,data/assembly/idba/TM-1
 refs: ref/Merlin.BAC.fa,ref/TB40E.GFP.fa
 labels:
 novenn: false
+ratio:
 threads: 6
